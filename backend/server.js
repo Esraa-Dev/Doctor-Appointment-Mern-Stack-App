@@ -9,7 +9,7 @@ import appointment from "./routes/appointment.js";
 import department from "./routes/department.js";
 import {connectCloudinary} from './config/cloudinary.js'
 import cors from "cors";
-
+import { errorHandler } from "./middlewares/error.middleware.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -31,6 +31,7 @@ app.use('/api/v1', appointment);
 app.use('/api/v1', department);
 
 app.use('/api/v1/admin', adminRouter);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
