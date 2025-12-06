@@ -1,8 +1,21 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
+import { UserRole } from '../constants.js';
 
-const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  image: string;
+  address: { line1: string; line2: string };
+  gender: string;
+  dob: string;
+  phone: string;
+  role: UserRole;
+}
+
+const UserSchema: Schema = new Schema({
+  name: { type: String, required: true, trim: true, index: true },
+  email: { type: String, required: true, unique: true, trim: true },
   password: { type: String, required: true },
   image: {
     type: String,
@@ -12,12 +25,14 @@ const UserSchema = new mongoose.Schema({
   address: { type: Object, default: { line1: "", line2: "" } },
   gender: { type: String, default: "Not Selected" },
   dob: { type: String, default: "Not Selected" },
-  phone:{type:String,default:"00000000000"},
+  phone: { type: String, default: "00000000000" },
   role: {
     type: String,
-    enum: ["patient", "doctor", "admin"],
-    default: "patient",
+    enum: Object.values(UserRole),
+    default: UserRole.PATIENT,
   },
 });
 
-export const User = mongoose.model("User", UserSchema);
+const User = mongoose.model<IUser>("User", UserSchema);
+
+export default User;

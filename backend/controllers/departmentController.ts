@@ -1,12 +1,17 @@
-import { Department } from "../models/DepartmentSchema.js";
-import { User } from "../models/UserSchema.js";
-export const createDepartment = async (req, res) => {
+import { Request, Response } from "express";
+import Department from "../models/DepartmentSchema.js";
+import User from "../models/UserSchema.js";
+
+export const createDepartment = async (req: Request, res: Response) => {
   try {
-   const { id } = req.user;
-     const user = await User.findById(id);
-     if (!user) {
-       return res.status(404).json({ message: "User not found" });
-     } 
+    if (!req.user) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+    const { id } = req.user;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     const { name, description, isActive } = req.body;
     const image = req.file;
     if (!image) {
@@ -28,7 +33,7 @@ export const createDepartment = async (req, res) => {
   }
 };
 
-export const getAllDepartments = async (req, res) => {
+export const getAllDepartments = async (req: Request, res: Response) => {
   try {
     const departments = await Department.find();
     res
@@ -39,7 +44,7 @@ export const getAllDepartments = async (req, res) => {
   }
 };
 
-export const getDepartmentCount = async (req, res) => {
+export const getDepartmentCount = async (req: Request, res: Response) => {
   try {
     const count = await Department.countDocuments();
     res
@@ -47,6 +52,6 @@ export const getDepartmentCount = async (req, res) => {
       .json({ message: "Department count fetched successfully", count });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error });
   }
 };

@@ -1,8 +1,9 @@
-import { User } from "../models/UserSchema.js";
+import { Request, Response } from "express";
+import User from "../models/UserSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password, role } = req.body;
     const user = await User.findOne({ email });
@@ -20,8 +21,8 @@ export const registerUser = async (req, res) => {
       role,
     });
     const token = jwt.sign(
-      { id: newUser._id, role: newUser.role },
-      process.env.JWT_SECRET,
+      { id: newUser._id.toString(), role: newUser.role },
+      process.env.JWT_SECRET as string,
       {
         expiresIn: "1d",
       }
@@ -34,7 +35,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -48,7 +49,7 @@ export const login = async (req, res) => {
     }
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET as string,
       {
         expiresIn: "1d",
       }
@@ -56,7 +57,7 @@ export const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "Strict",
+      sameSite: "strict",
     });
 
     res.status(200).json({ message: "Login successful", token });

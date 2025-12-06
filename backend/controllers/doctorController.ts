@@ -1,6 +1,7 @@
-import { Doctor } from "../models/DoctorSchema.js";
+import { Request, Response } from "express";
+import Doctor from "../models/DoctorSchema.js";
 
-export const addDoctor = async (req, res) => {
+export const addDoctor = async (req: Request, res: Response) => {
   try {
     const { name, specialization, description, experience } = req.body;
 
@@ -11,7 +12,7 @@ export const addDoctor = async (req, res) => {
       name,
       specialization,
       image: req.file.path,
-      description,
+      about: description,
       experience,
     });
 
@@ -21,21 +22,21 @@ export const addDoctor = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-export const getAllDoctors = async (req, res) => {
+export const getAllDoctors = async (req: Request, res: Response) => {
   try {
     const doctors = await Doctor.find({});
     res.status(200).json({ message: "Doctors fetched successfully", doctors });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-export const getDoctorById = async (req, res) => {
+export const getDoctorById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const doctor = await Doctor.findById(id);
@@ -45,11 +46,11 @@ export const getDoctorById = async (req, res) => {
     res.status(200).json({ message: "Doctor fetched successfully", doctor });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
 
-export const getDoctorCount = async (req, res) => {
+export const getDoctorCount = async (req: Request, res: Response) => {
   try {
     const count = await Doctor.countDocuments();
     console.log("Doctor count:", count);
@@ -58,6 +59,6 @@ export const getDoctorCount = async (req, res) => {
       .json({ message: "Doctor count fetched successfully", count });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error });
   }
 };
