@@ -1,30 +1,51 @@
 import { Request, Response } from "express";
-import User, { registerValidation } from "../models/UserSchema.js";
+import User, {
+  loginValidation,
+  registerValidation,
+} from "../models/UserSchema.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { AsyncHandler } from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { emailVerificationContent, sendEmail } from "../utils/email.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+
+const generateAccessAndRefreshToken = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError("User Not Found", 400);
+  }
+
+  const accessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
+  user.refreshToken = refreshToken;
+
+  await user.save({ validateBeforeSave: false });
+
+  return { accessToken, refreshToken };
+};
 
 export const registerUser = AsyncHandler(
   async (req: Request, res: Response) => {
     const { error } = registerValidation.validate(req.body, {
       abortEarly: false,
     });
+
     if (error) {
-      throw new ApiError("Validation failed", 400, error.details);
+      const messages = error.details.map((err) => {
+        return err.message.replace(/["]/g, "");
+      });
+      throw new ApiError("Validation failed", 400, messages);
     }
 
     const { name, email, password, address, gender, dob, phone, role } =
       req.body;
 
-    const user = await User.findOne({ email });
-    if (user) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       throw new ApiError("User already exists", 400);
     }
 
-    const newUser = await User.create({
+    const newUser = new User({
       name,
       email,
       password,
@@ -40,7 +61,8 @@ export const registerUser = AsyncHandler(
       newUser.generateTemporaryToken();
     newUser.emailVerificationToken = hashedToken;
     newUser.emailVerificationTokenExpiry = tokenExpiry;
-    await newUser.save({ validateBeforeSave: false });
+
+    await newUser.save();
 
     const mailgenContent = await emailVerificationContent(
       name,
@@ -52,42 +74,80 @@ export const registerUser = AsyncHandler(
       mailgenContent,
     });
 
-    res.status(201).json(
-      new ApiResponse(
-        "User registered successfully and verification email has been sent",
-        201
-      )
-    );
+    res
+      .status(201)
+      .json(
+        new ApiResponse(
+          "User registered successfully and verification email has been sent",
+          null,
+          201
+        )
+      );
   }
 );
 
-export const login = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+export const login = AsyncHandler(async (req: Request, res: Response) => {
+  const { error } = loginValidation.validate(req.body);
 
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET as string,
-      {
-        expiresIn: "1d",
-      }
+  if (error) {
+    const messages = error.details.map((err) =>
+      err.message.replace(/["]/g, "")
     );
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-    });
-
-    res.status(200).json({ message: "Login successful", token });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    throw new ApiError("Validation failed", 400, messages);
   }
-};
+
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    throw new ApiError("Invalid credentials", 401);
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw new ApiError("Invalid credentials", 401);
+  }
+
+  if (!user.isEmailVerified) {
+    throw new ApiError(
+      "Email not verified. Please verify your email first.",
+      403
+    );
+  }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id.toString()
+  );
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  };
+
+  const userResponse = {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    image: user.image,
+    isEmailVerified: user.isEmailVerified,
+  };
+
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(
+      new ApiResponse(
+        "User logged in successfully",
+        {
+          user: userResponse,
+        },
+        200
+      )
+    );
+});

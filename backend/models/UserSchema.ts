@@ -1,5 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { UserRole } from "../constants.js";
+import {
+  AccessTokenExpire,
+  RefreshTokenExpire,
+  UserRole,
+} from "../constants.js";
 import Joi from "joi";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -11,7 +15,7 @@ interface IUser extends Document {
   image: string;
   address: { line1: string; line2: string };
   gender: string;
-  dob: string;
+  dob: Date;
   phone: string;
   role: UserRole;
   isEmailVerified: boolean;
@@ -22,6 +26,10 @@ interface IUser extends Document {
     hashedToken: string;
     tokenExpiry: Date;
   };
+  isPasswordValid: (password: string) => Promise<boolean>;
+  refreshToken: string;
+  generateAccessToken: () => string;
+  generateRefreshToken: () => string;
 }
 
 const UserSchema: Schema = new Schema({
@@ -35,7 +43,7 @@ const UserSchema: Schema = new Schema({
   },
   address: { type: Object, default: { line1: "", line2: "" } },
   gender: { type: String, default: "Not Selected" },
-  dob: { type: String, default: "Not Selected" },
+dob: { type: Date, default: null },
   phone: { type: String, default: "00000000000" },
   role: {
     type: String,
@@ -52,12 +60,12 @@ const UserSchema: Schema = new Schema({
   emailVerificationTokenExpiry: {
     type: Date,
   },
+  refreshToken: String,
 });
 
 UserSchema.pre<IUser>("save", async function () {
   if (!this.isModified("password")) return;
-
-  await bcrypt.hash(this.password, 20);
+  this.password = await bcrypt.hash(this.password, 10);
 });
 
 UserSchema.methods.isPasswordValid = async function (password: string) {
@@ -71,16 +79,28 @@ UserSchema.methods.generateTemporaryToken = function () {
   return { token, hashedToken, tokenExpiry };
 };
 
-// UserSchema.method.generateAccessToken = async function () {
-//   jwt.sign({
-//     name: this.name,
-//     _id: this._id,
-//     role: this.role,
-//     email: this.email,
-//   },process.env.JWT_SECRET,{
-//     expiresIn:1
-//   });
-// };
+UserSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      role: this.role,
+    },
+    process.env.ACCESS_TOKEN_SECRET as string,
+    {
+      expiresIn: AccessTokenExpire,
+    }
+  );
+};
+
+UserSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET as string,
+    { expiresIn: RefreshTokenExpire }
+  );
+};
 
 export const registerValidation = Joi.object({
   name: Joi.string().min(3).max(50).required().messages({
@@ -119,6 +139,16 @@ export const registerValidation = Joi.object({
   role: Joi.string()
     .valid(...Object.values(UserRole))
     .optional(),
+});
+
+export const loginValidation = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Invalid email format",
+  }),
+  password: Joi.string().required().messages({
+    "string.empty": "Password is required",
+  }),
 });
 const User = mongoose.model<IUser>("User", UserSchema);
 
