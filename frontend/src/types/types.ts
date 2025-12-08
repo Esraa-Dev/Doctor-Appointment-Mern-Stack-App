@@ -25,3 +25,7 @@ export interface LoginFormData {
   email: string;
   password: string;
 }
+
+export interface MobileNavbarProps {
+  isOpen: boolean;
+}

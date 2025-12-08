@@ -42,6 +42,10 @@ const LoginForm = () => {
           register={register("password")}
           error={errors.password}
         />
+        <Link
+          to="/forgot-password"
+          className="text-sm text-secondary hover:text-primary font-medium block"
+        >نسيت كلمة المرور؟</Link>
 
         <Button className="w-full py-4" type="submit" disabled={isPending}>
           {isPending ? (

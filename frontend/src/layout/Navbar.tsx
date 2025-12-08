@@ -9,8 +9,8 @@ export const Navbar = () => {
   const navigate=useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <nav className="py-6 bg-white">
-      <div className="flex-center justify-between container flex-wrap gap-y-2">
+    <nav className="py-6 bg-white relative">
+      <div className="flex-center justify-between container flex-wrap gap-y-2 h-10">
         <Logo />
         <NavLinks />
         <Button className="hidden lg:flex bg-primary text-white hover:bg-primary/80"onClick={()=>navigate("/login")}>
@@ -24,7 +24,8 @@ export const Navbar = () => {
           {!isMenuOpen ? <Menu size={18} /> : <X size={18} />}
         </button>
       </div>
-      {isMenuOpen && <MobileNavbar />}
+      {isMenuOpen && <MobileNavbar isOpen={isMenuOpen} />
+}
     </nav>
   );
 };
