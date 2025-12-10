@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=El+Messiri:wght@400..700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -20,15 +20,15 @@ body,
   .container {
     @apply mx-auto px-4 sm:px-6 lg:px-8 w-full max-w-[1280px];
   }
-  .flex-center{
+  .flex-center {
     @apply flex justify-center items-center;
   }
 }
 
 @theme {
---color-primary: #ed7b21;        
-  --color-secondary: #2594c9;      
-  --color-primaryText: #393633;   
-  --color-primaryBorder: #E7E8EB; 
-  --color-background: #f4f4f4;       
+  --color-primary: #ed7b21;
+  --color-secondary: #2594c9;
+  --color-primaryText: #393633;
+  --color-primaryBorder: #e7e8eb;
+  --color-background: #f4f4f4;
 }

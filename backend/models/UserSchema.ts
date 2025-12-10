@@ -19,8 +19,10 @@ interface IUser extends Document {
   phone: string;
   role: UserRole;
   isEmailVerified: boolean;
-  emailVerificationToken: string;
-  emailVerificationTokenExpiry: Date;
+  // emailVerificationToken: string;
+  // emailVerificationTokenExpiry: Date;
+  verifyOtp?: string;
+  verifyOtpExpireAt?: Date;
   generateTemporaryToken: () => {
     token: string;
     hashedToken: string;
@@ -43,7 +45,7 @@ const UserSchema: Schema = new Schema({
   },
   address: { type: Object, default: { line1: "", line2: "" } },
   gender: { type: String, default: "Not Selected" },
-dob: { type: Date, default: null },
+  dob: { type: Date, default: null },
   phone: { type: String, default: "00000000000" },
   role: {
     type: String,
@@ -54,12 +56,14 @@ dob: { type: Date, default: null },
     type: Boolean,
     default: false,
   },
-  emailVerificationToken: {
-    type: String,
-  },
-  emailVerificationTokenExpiry: {
-    type: Date,
-  },
+  verifyOtp: { type: String, default: "" },
+  verifyOtpExpireAt: { type: Date },
+  // emailVerificationToken: {
+  //   type: String,
+  // },
+  // emailVerificationTokenExpiry: {
+  //   type: Date,
+  // },
   refreshToken: String,
 });
 
@@ -72,12 +76,12 @@ UserSchema.methods.isPasswordValid = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
-UserSchema.methods.generateTemporaryToken = function () {
-  const token = crypto.randomBytes(32).toString("hex");
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  const tokenExpiry = new Date(Date.now() + 20 * 60 * 1000);
-  return { token, hashedToken, tokenExpiry };
-};
+// UserSchema.methods.generateTemporaryToken = function () {
+//   const token = crypto.randomBytes(32).toString("hex");
+//   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+//   const tokenExpiry = new Date(Date.now() + 20 * 60 * 1000);
+//   return { token, hashedToken, tokenExpiry };
+// };
 
 UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(

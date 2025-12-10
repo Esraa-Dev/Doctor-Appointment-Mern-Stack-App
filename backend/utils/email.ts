@@ -48,26 +48,15 @@ async function sendEmail(options: SendEmailOptions): Promise<void> {
 
 const emailVerificationContent = async (
   username: string,
-  verificationUrl: string
+  otp: string
 ): Promise<Mailgen.Content> => {
   return {
     body: {
       name: username,
       greeting: "مرحباً",
       signature: "مع خالص التحية",
-      intro: `مرحباً ${username}!  
-شكرًا لانضمامك إلينا. برجاء تأكيد بريدك الإلكتروني للبدء في استخدام حسابك.`,
-
-      action: {
-        instructions: "اضغط على الزر التالي لتأكيد بريدك:",
-        button: {
-          color: "#2594c9",
-          text: "تأكيد البريد الإلكتروني",
-          link: verificationUrl,
-        },
-      },
-
-      outro: "إذا لم تقم بإنشاء حساب، يمكنك تجاهل هذه الرسالة.",
+      intro: `مرحباً ${username}!
+  . يرجى استخدام رمز التحقق التالي لتأكيد بريدك الإلكتروني: ${otp}`,
     },
   };
 };

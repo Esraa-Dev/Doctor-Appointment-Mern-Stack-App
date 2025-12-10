@@ -29,3 +29,7 @@ export interface LoginFormData {
 export interface MobileNavbarProps {
   isOpen: boolean;
 }
+
+export interface VerifyFormData {
+  verifyOtp: string;
+}

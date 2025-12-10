@@ -44,6 +44,7 @@ export const registerUser = AsyncHandler(
     if (existingUser) {
       throw new ApiError("User already exists", 400);
     }
+    const verifyOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
     const newUser = new User({
       name,
@@ -54,20 +55,19 @@ export const registerUser = AsyncHandler(
       dob,
       phone,
       role,
-      isEmailVerified: false,
+      verifyOtp,
+      verifyOtpExpireAt: Date.now() + 60 * 1000,
     });
 
-    const { token, hashedToken, tokenExpiry } =
-      newUser.generateTemporaryToken();
-    newUser.emailVerificationToken = hashedToken;
-    newUser.emailVerificationTokenExpiry = tokenExpiry;
+    // const { token, hashedToken, tokenExpiry } =
+    //   // newUser.generateTemporaryToken();
+    // newUser.emailVerificationToken = hashedToken;
+    // newUser.emailVerificationTokenExpiry = tokenExpiry;
 
     await newUser.save();
 
-    const mailgenContent = await emailVerificationContent(
-      name,
-      `${process.env.FRONTEND_URL}/verify-email/${token}`
-    );
+    const mailgenContent = await emailVerificationContent(name, verifyOtp);
+
     await sendEmail({
       email: newUser.email,
       subject: "تأكيد البريد الإلكتروني",
@@ -85,6 +85,26 @@ export const registerUser = AsyncHandler(
       );
   }
 );
+
+export const verifyEmail = AsyncHandler(async (req: Request, res: Response) => {
+  const { verifyOtp } = req.body;
+
+  const user = await User.findOne({verifyOtp,verifyOtpExpireAt: { $gt: Date.now()}  });
+
+  if (!user) {
+    throw new ApiError("Invalid or Expired varification code", 400);
+  }
+
+  user.isEmailVerified = true;
+  user.verifyOtp = "";
+  user.verifyOtpExpireAt = undefined;
+
+  await user.save();
+
+  res
+    .status(200)
+    .json(new ApiResponse("Email verified successfully", null, 200));
+});
 
 export const login = AsyncHandler(async (req: Request, res: Response) => {
   const { error } = loginValidation.validate(req.body);
