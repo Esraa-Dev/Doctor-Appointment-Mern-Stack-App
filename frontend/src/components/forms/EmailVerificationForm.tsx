@@ -29,6 +29,7 @@ const EmailVerificationForm = () => {
 
 
   const handleInputChange = (index: number, value: string) => {
+    if (!/^\d?$/.test(value)) return;
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
@@ -50,26 +51,26 @@ const EmailVerificationForm = () => {
     }
   }
 
-const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-  const newArr = [...code];
-  if (e.key === "Backspace") {
-    if (newArr[index]) {
-      newArr[index] = "";
-      setCode(newArr);
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const newArr = [...code];
+    if (e.key === "Backspace") {
+      if (newArr[index]) {
+        newArr[index] = "";
+        setCode(newArr);
+        return;
+      }
+      if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
       return;
     }
-    if (index > 0) {
+    if (e.key === "ArrowLeft" && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
-    return;
-  }
-  if (e.key === "ArrowLeft" && index > 0) {
-    inputRefs.current[index - 1]?.focus();
-  }
-  if (e.key === "ArrowRight" && index < 5) {
-    inputRefs.current[index + 1]?.focus();
-  }
-};
+    if (e.key === "ArrowRight" && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
 
   const onSubmit = async (data: VerifyFormData) => {
     mutate(data);
