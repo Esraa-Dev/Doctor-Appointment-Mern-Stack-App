@@ -7,7 +7,7 @@ import {
 import Joi from "joi";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
+// import crypto from "crypto";
 interface IUser extends Document {
   name: string;
   email: string;
@@ -23,6 +23,8 @@ interface IUser extends Document {
   // emailVerificationTokenExpiry: Date;
   verifyOtp?: string;
   verifyOtpExpireAt?: Date;
+  resetPasswordOtp: string;
+  resetPasswordOtpExpireAt: Date;
   generateTemporaryToken: () => {
     token: string;
     hashedToken: string;
@@ -30,6 +32,7 @@ interface IUser extends Document {
   };
   isPasswordValid: (password: string) => Promise<boolean>;
   refreshToken: string;
+  generateOtp: (type: string) => string;
   generateAccessToken: () => string;
   generateRefreshToken: () => string;
 }
@@ -58,12 +61,8 @@ const UserSchema: Schema = new Schema({
   },
   verifyOtp: { type: String, default: "" },
   verifyOtpExpireAt: { type: Date },
-  // emailVerificationToken: {
-  //   type: String,
-  // },
-  // emailVerificationTokenExpiry: {
-  //   type: Date,
-  // },
+  resetPasswordOtp: { type: String },
+  resetPasswordOtpExpireAt: { type: Date },
   refreshToken: String,
 });
 
@@ -82,6 +81,20 @@ UserSchema.methods.isPasswordValid = async function (password: string) {
 //   const tokenExpiry = new Date(Date.now() + 20 * 60 * 1000);
 //   return { token, hashedToken, tokenExpiry };
 // };
+
+UserSchema.methods.generateOtp = function (type = "verification") {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  if (type === "verification") {
+    this.verifyOtp = otp;
+    this.verifyOtpExpireAt = new Date(Date.now() + 10 * 60 * 1000);
+  } else if (type === "reset") {
+    this.resetPasswordOtp = otp;
+    this.resetPasswordOtpExpireAt = new Date(Date.now() + 10 * 60 * 1000);
+  }
+
+  return otp;
+};
 
 UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(
@@ -154,6 +167,54 @@ export const loginValidation = Joi.object({
     "string.empty": "Password is required",
   }),
 });
+
+export const forgotPasswordValidation = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Invalid email format",
+  }),
+});
+
+export const verifyResetOtpValidation = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Invalid email format",
+  }),
+  resetPasswordOtp: Joi.string().length(6).pattern(/^\d+$/).required().messages({
+    "string.empty": "OTP is required",
+    "string.length": "OTP must be 6 digits",
+    "string.pattern.base": "OTP must contain only numbers",
+  }),
+});
+
+export const resetPasswordValidation = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Invalid email format",
+  }),
+  password: Joi.string().min(6).required().messages({
+    "string.empty": "Password is required",
+    "string.min": "Password must be at least 6 characters",
+  }),
+  confirmPassword: Joi.string().required().valid(Joi.ref("password")).messages({
+    "any.only": "Passwords must match",
+    "string.empty": "Confirm password is required",
+  }),
+});
+
+export const resendOtpValidation = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Invalid email format",
+  }),
+  type: Joi.string()
+    .valid("reset-password", "email-verification")
+    .required()
+    .messages({
+      "any.only": "Type must be either reset-password or email-verification",
+    }),
+});
+
 const User = mongoose.model<IUser>("User", UserSchema);
 
 export default User;

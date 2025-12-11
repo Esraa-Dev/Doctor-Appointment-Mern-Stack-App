@@ -11,10 +11,11 @@ import Appointment from "./pages/Appointment";
 import DoctorPage from "./pages/DoctorPage";
 import MyProfile from "./pages/MyProfile";
 import About from "./pages/About";
-import ForgotPasswordForm from "./components/forms/ForgotPasswordForm";
 import EmailVerificationForm from "./components/forms/EmailVerificationForm";
 import ResetPasswordForm from "./components/forms/ResetPasswordForm";
 import RegisterPage from "./pages/RegisterPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetOtpVerificationPage from "./pages/ResetOtpVerificationPage";
 
 const App = () => {
   return (
@@ -34,9 +35,10 @@ const App = () => {
         <Route path="/appointments/:docId" element={<Appointment />} />
         {/* <Route path="/departments" element={<LoginPage />} /> */}
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="/verify-email" element={<EmailVerificationForm />} />
+        <Route path="/verify-reset-otp" element={<ResetOtpVerificationPage />} />
         {/* Dashboard */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardOverview />} />

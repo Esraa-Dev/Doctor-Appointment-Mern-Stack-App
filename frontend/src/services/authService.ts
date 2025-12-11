@@ -14,4 +14,12 @@ export const authService = {
     const response = await api.post("auth/verify-email", data);
     return response.data;
   },
+  forgotPassword: async (data) => {
+    const response = await api.post("auth/forgot-password", data);
+    return response.data;
+  },
+  verifyResetOtp: async (data) => {
+    const response = await api.post("auth/verify-reset-otp", data);
+    return response.data;
+  },
 };

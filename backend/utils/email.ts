@@ -63,29 +63,17 @@ const emailVerificationContent = async (
 
 const forgotPasswordContent = async (
   username: string,
-  resetUrl: string
+  otp: string
 ): Promise<Mailgen.Content> => {
   return {
     body: {
       name: username,
       greeting: "مرحباً",
       signature: "مع خالص التحية",
-
-      intro: `مرحباً ${username}!  
-لقد تلقّينا طلبًا لإعادة تعيين كلمة المرور الخاصة بك.`,
-
-      action: {
-        instructions: "اضغط على الزر التالي لإعادة تعيين كلمة المرور:",
-        button: {
-          color: "#2594c9",
-          text: "إعادة تعيين كلمة المرور",
-          link: resetUrl,
-        },
-      },
-
-      outro: "إذا لم تطلب إعادة التعيين، يمكنك تجاهل هذه الرسالة.",
+      intro: `مرحباً ${username}!\nلقد تلقّينا طلبًا لإعادة تعيين كلمة المرور الخاصة بك.\n\nرمز التحقق الخاص بك هو: ${otp}`,
     },
   };
 };
+
 
 export { sendEmail, emailVerificationContent, forgotPasswordContent };

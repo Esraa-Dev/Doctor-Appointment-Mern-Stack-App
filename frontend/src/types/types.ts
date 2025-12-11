@@ -33,3 +33,6 @@ export interface MobileNavbarProps {
 export interface VerifyFormData {
   verifyOtp: string;
 }
+export interface ForgotPasswordFormData {
+  email: string;
+}
