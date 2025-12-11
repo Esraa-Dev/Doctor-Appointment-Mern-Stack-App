@@ -36,3 +36,8 @@ export interface VerifyFormData {
 export interface ForgotPasswordFormData {
   email: string;
 }
+
+export interface ResetPasswordFormData {
+  password: string;
+  confirmPassword: string;
+}

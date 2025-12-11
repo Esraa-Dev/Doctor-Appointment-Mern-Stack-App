@@ -1,50 +1,61 @@
-import { Lock } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
 import { TextInput } from "../ui/TextInput";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/Button";
 import AppForm from "./AppForm";
+import { useResetPassword } from "../../hooks/useResetPassword";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { resetPasswordSchema } from "../../validations/resetPasswordSchema";
+import type { ResetPasswordFormData } from "../../types/types";
+import { useLocation } from "react-router-dom";
 
 const ResetPasswordForm = () => {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
-  const password = watch("newPassword");
-
-  const onSubmit = (data: any) => {
-    console.log("RESET PASSWORD DATA:", data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(resetPasswordSchema),
+  });
+  const { mutate, isPending } = useResetPassword();
+   const location = useLocation();
+    const userEmail = location.state?.email;
+  const onSubmit = (data: ResetPasswordFormData) => {
+        mutate({ ...data, email: userEmail })
   };
 
   return (
     <AppForm title="إعادة تعيين كلمة المرور">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* New Password */}
         <TextInput
           label="كلمة المرور الجديدة"
           Icon={Lock}
           type="password"
           placeholder="أدخل كلمة المرور الجديدة"
-          register={register("newPassword", { 
-            required: "كلمة المرور الجديدة مطلوبة",
-            minLength: { value: 6, message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" }
-          })}
-          error={errors.newPassword}
+          register={register("password")}
+          error={errors.password}
         />
 
-        {/* Confirm New Password */}
         <TextInput
           label="تأكيد كلمة المرور الجديدة"
           Icon={Lock}
           type="password"
           placeholder="أعد إدخال كلمة المرور الجديدة"
-          register={register("confirmNewPassword", { 
-            required: "تأكيد كلمة المرور مطلوب",
-            validate: value => value === password || "كلمات المرور غير متطابقة"
-          })}
-          error={errors.confirmNewPassword}
+          register={register("confirmPassword")}
+          error={errors.confirmPassword}
         />
 
-        {/* Submit Button */}
-        <Button className="w-full py-4" type="submit">
-          إعادة تعيين كلمة المرور
+        <Button className="w-full py-4" type="submit" disabled={isPending}>
+          {isPending ? (
+            <div className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin ml-2" />
+              <span>جاري إعادة التعيين...</span>
+            </div>
+          ) : (
+            "إعادة تعيين كلمة المرور"
+          )}
         </Button>
+
 
       </form>
     </AppForm>

@@ -5,7 +5,6 @@ export const authService = {
     const response = await api.post("auth/login", data);
     return response.data;
   },
-
   register: async (data) => {
     const response = await api.post("auth/register", data);
     return response.data;
@@ -20,6 +19,10 @@ export const authService = {
   },
   verifyResetOtp: async (data) => {
     const response = await api.post("auth/verify-reset-otp", data);
+    return response.data;
+  },
+    resetPassword: async (data) => {
+    const response = await api.post("auth/reset-password", data);
     return response.data;
   },
 };

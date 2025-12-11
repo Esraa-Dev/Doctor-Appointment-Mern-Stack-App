@@ -24,7 +24,7 @@ interface IUser extends Document {
   verifyOtp?: string;
   verifyOtpExpireAt?: Date;
   resetPasswordOtp: string;
-  resetPasswordOtpExpireAt: Date;
+  resetPasswordOtpExpireAt?: Date;
   generateTemporaryToken: () => {
     token: string;
     hashedToken: string;
