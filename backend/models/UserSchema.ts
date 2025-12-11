@@ -19,8 +19,6 @@ interface IUser extends Document {
   phone: string;
   role: UserRole;
   isEmailVerified: boolean;
-  // emailVerificationToken: string;
-  // emailVerificationTokenExpiry: Date;
   verifyOtp?: string;
   verifyOtpExpireAt?: Date;
   resetPasswordOtp: string;

@@ -1,8 +1,10 @@
-import * as yup from "yup";
+import { z } from "zod";
 
-export const resetOtpSchema = yup.object().shape({
-  resetPasswordOtp: yup
+export const resetOtpSchema = z.object({
+  resetPasswordOtp: z
     .string()
-    .length(6, "الرمز يجب أن يكون 6 أرقام")
-    .required("هذا الحقل مطلوب"),
+    .length(6, "الرجاء إدخال الرمز المكون من 6 أرقام")
+    .regex(/^\d{6}$/, "يجب أن يتكون الرمز من أرقام فقط"),
 });
+
+export type ResetOtpFormData = z.infer<typeof resetOtpSchema>;

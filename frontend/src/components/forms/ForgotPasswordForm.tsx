@@ -4,10 +4,9 @@ import { useForm } from "react-hook-form";
 import { Button } from "../ui/Button";
 import { Link } from "react-router-dom";
 import AppForm from "./AppForm";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForgotPassword } from "../../hooks/useForgotPassword";
-import type { ForgotPasswordFormData } from "../../types/types";
-import { forgotPasswordSchema } from "../../validations/forgotPasswordSchema";
+import { forgotPasswordSchema, type ForgotPasswordFormData } from "../../validations/forgotPasswordSchema";
 
 export const ForgotPasswordForm = () => {
   const {
@@ -15,11 +14,10 @@ export const ForgotPasswordForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(forgotPasswordSchema),
+    resolver: zodResolver(forgotPasswordSchema),
   });
   const { mutate, isPending } = useForgotPassword()
   const onSubmit = (data: ForgotPasswordFormData) => {
-    console.log("FORGOT PASSWORD DATA:", data);
     mutate(data)
 
   };

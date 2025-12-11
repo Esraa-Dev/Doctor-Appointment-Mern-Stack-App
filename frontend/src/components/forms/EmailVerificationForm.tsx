@@ -3,10 +3,9 @@ import { Mail, Loader2 } from "lucide-react";
 import { Button } from "../ui/Button";
 import AppForm from "./AppForm";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { otpSchema } from "../../validations/otpSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { otpSchema, type VerifyOtpFormData } from "../../validations/otpSchema";
 import { useVerifyEmail } from "../../hooks/useVerifyEmail";
-import type { VerifyFormData } from "../../types/types";
 
 const EmailVerificationForm = () => {
   const [code, setCode] = useState(Array(6).fill(""));
@@ -19,7 +18,7 @@ const EmailVerificationForm = () => {
     trigger,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(otpSchema),
+    resolver: zodResolver(otpSchema),
     mode: "onChange",
   });
 
@@ -72,7 +71,7 @@ const EmailVerificationForm = () => {
     }
   };
 
-  const onSubmit = async (data: VerifyFormData) => {
+  const onSubmit = async (data: VerifyOtpFormData) => {
     mutate(data);
   };
   return (

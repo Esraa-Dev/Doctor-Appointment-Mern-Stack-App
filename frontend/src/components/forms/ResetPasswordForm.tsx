@@ -4,9 +4,8 @@ import { useForm } from "react-hook-form";
 import { Button } from "../ui/Button";
 import AppForm from "./AppForm";
 import { useResetPassword } from "../../hooks/useResetPassword";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { resetPasswordSchema } from "../../validations/resetPasswordSchema";
-import type { ResetPasswordFormData } from "../../types/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPasswordSchema, type ResetPasswordFormData } from "../../validations/resetPasswordSchema";
 import { useLocation } from "react-router-dom";
 
 const ResetPasswordForm = () => {
@@ -15,7 +14,7 @@ const ResetPasswordForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(resetPasswordSchema),
+    resolver: zodResolvergit(resetPasswordSchema),
   });
   const { mutate, isPending } = useResetPassword();
    const location = useLocation();

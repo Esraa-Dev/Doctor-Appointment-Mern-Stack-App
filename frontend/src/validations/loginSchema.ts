@@ -1,9 +1,12 @@
-import * as yup from "yup";
+import { z } from "zod";
 
-export const loginSchema = yup.object({
-  email: yup
+export const loginSchema = z.object({
+  email: z
     .string()
-    .email("البريد الإلكتروني غير صالح")
-    .required("البريد الإلكتروني مطلوب"),
-  password: yup.string().required("كلمة المرور مطلوبة"),
+    .email("البريد الإلكتروني غير صالح"),
+  password: z
+    .string()
+    .min(1, "كلمة المرور مطلوبة"),
 });
+
+export type LoginFormData = z.infer<typeof loginSchema>;

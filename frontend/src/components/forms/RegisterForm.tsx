@@ -1,13 +1,12 @@
 import { User, Mail, Lock, Phone, Loader2 } from "lucide-react";
 import { TextInput } from "../ui/TextInput";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/Button";
 import { Link } from "react-router-dom";
 import AppForm from "./AppForm";
 import { useRegister } from "../../hooks/useRegister";
-import { registerSchema } from "../../validations/registerSchema";
-import type { RegisterFormData } from "../../types/types";
+import { registerSchema, type RegisterFormData } from "../../validations/registerSchema";
 
 
 export const RegisterForm = () => {
@@ -16,7 +15,7 @@ export const RegisterForm = () => {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(registerSchema),
+        resolver: zodResolver(registerSchema),
     });
     const { mutate, isPending } = useRegister();
     const onSubmit = (data: RegisterFormData) => {

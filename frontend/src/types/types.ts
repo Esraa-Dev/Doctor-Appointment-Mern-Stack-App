@@ -12,32 +12,3 @@ export interface AppFormProps {
   title?: string;
   children: React.ReactNode;
 }
-
-export interface RegisterFormData {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-  confirmPassword: string;
-}
-
-export interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-export interface MobileNavbarProps {
-  isOpen: boolean;
-}
-
-export interface VerifyFormData {
-  verifyOtp: string;
-}
-export interface ForgotPasswordFormData {
-  email: string;
-}
-
-export interface ResetPasswordFormData {
-  password: string;
-  confirmPassword: string;
-}

@@ -1,11 +1,16 @@
-import * as yup from "yup";
- export const resetPasswordSchema = yup.object({
-  password: yup
-    .string()
-    .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
-    .required("كلمة المرور مطلوبة"),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password")], "كلمات المرور غير متطابقة")
-    .required("تأكيد كلمة المرور مطلوب"),
-});
+import { z } from "zod";
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
+
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "كلمات المرور غير متطابقة",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;

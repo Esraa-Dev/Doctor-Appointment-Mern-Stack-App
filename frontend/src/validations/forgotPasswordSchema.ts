@@ -1,9 +1,9 @@
-import * as yup from "yup";
+import { z } from "zod";
 
-export const forgotPasswordSchema = yup.object({
-  email: yup
+export const forgotPasswordSchema = z.object({
+  email: z
     .string()
-    .email("البريد الإلكتروني غير صالح")
-    .required("البريد الإلكتروني مطلوب"),
+    .email("البريد الإلكتروني غير صالح"),
 });
 
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;

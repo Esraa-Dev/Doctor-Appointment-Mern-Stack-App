@@ -3,8 +3,8 @@ import { Loader2, Mail } from "lucide-react";
 import { Button } from "../ui/Button";
 import AppForm from "./AppForm";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { resetOtpSchema } from "../../validations/resetOtpSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetOtpSchema, type ResetOtpFormData } from "../../validations/resetOtpSchema";
 import { useVerifyResetOtp } from "../../hooks/useVerifyResetOtp";
 import { useLocation } from "react-router-dom";
 export const ResetOtpVerificationForm = () => {
@@ -19,7 +19,7 @@ export const ResetOtpVerificationForm = () => {
         trigger,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(resetOtpSchema),
+        resolver: zodResolver(resetOtpSchema),
         mode: "onChange",
     });
 
@@ -69,7 +69,7 @@ export const ResetOtpVerificationForm = () => {
         }
     };
 
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: ResetOtpFormData) => {
         mutate({ ...data, email: userEmail })
     };
 
@@ -94,7 +94,7 @@ export const ResetOtpVerificationForm = () => {
                             maxLength={1}
                             value={digit}
                             placeholder="•"
-                            ref={(el) => (inputRefs.current[i] = el)}
+                            ref={(el) => { inputRefs.current[i] = el; }}
                             onChange={(e) => handleInputChange(i, e.target.value)}
                             onKeyDown={(e) => handleKeyDown(e, i)}
                             onPaste={i === 0 ? handlePaste : undefined}
