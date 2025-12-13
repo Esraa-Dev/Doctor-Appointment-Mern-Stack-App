@@ -280,4 +280,25 @@ export const resetPassword = AsyncHandler(
   }
 );
 
+export const logout = AsyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      $unset: { refreshToken: 1 },
+    },
+    { new: true }
+  );
 
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+  };
+
+  res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse("User logged out", 200));
+});
