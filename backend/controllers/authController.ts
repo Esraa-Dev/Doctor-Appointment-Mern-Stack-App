@@ -281,7 +281,7 @@ export const resetPassword = AsyncHandler(
 );
 
 export const logout = AsyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user?.id;
+  const userId = req.user?._id;
   await User.findByIdAndUpdate(
     userId,
     {
@@ -302,3 +302,13 @@ export const logout = AsyncHandler(async (req: Request, res: Response) => {
     .clearCookie("refreshToken", cookieOptions)
     .json(new ApiResponse("User logged out", 200));
 });
+
+export const getCurrentUser = AsyncHandler(
+  async (req: Request, res: Response) => {
+    const _id = req.user?._id;
+    const user = User.findById({ _id }).select("-password -refreshToken");
+    res
+      .status(200)
+      .json(new ApiResponse("User retrieved successfully", { user }, 200));
+  }
+);

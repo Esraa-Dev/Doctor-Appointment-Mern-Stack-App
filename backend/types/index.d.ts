@@ -1,5 +1,5 @@
 export interface DecodedUser {
-  id: string;
+  _id: string;
   role: string;
 }
 
