@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Logo } from "../components/ui/Logo";
 import { MobileNavbar } from "./MobileNavbar";
@@ -14,35 +14,44 @@ export const Navbar = () => {
   const { data: user, isLoading } = useGetCurrentUser();
   console.log(user);
   return (
-    <nav className="py-6 bg-white relative shadow-md">
-      <div className="flex-center justify-between container flex-wrap gap-y-2 h-10">
+    <nav className={`py-6 relative shadow-md ${isMenuOpen?"bg-background":"bg-white"}`}>
+      <div className="flex-center justify-between container flex-wrap h-10">
         <Logo />
         <NavLinks />
-
         {!isLoading && user ? (
-          <div className="relative flex items-center gap-2 h-full">
+          <div className="relative hidden lg:flex items-center gap-2 h-full">
             <button
               onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2 cursor-pointer hover:bg-primary/10 rounded-md px-2 py-1 transition-colors"
+              className="flex items-center gap-2 cursor-pointer px-2 py-1 transition-colors"
             >
               <img
                 src={user.image}
                 alt={user.name}
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-10 h-10 p-1 rounded-full object-cover border border-primary/45"
               />
-              <span className="font-medium">{user.name}</span>
-              <ChevronDown size={16} />
+              <span className="font-medium text-sm text-primaryText">{user.name}</span>
+              <ChevronDown size={16} className="font-medium text-primary" />
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute right-0 top-full bg-white border border-primaryBorder rounded-md shadow-lg z-50">
+              <div className="absolute w-35 right-0 top-[calc(100%+10px)] bg-white border border-primaryBorder rounded-sm shadow-2xl z-50">
                 <button
-                  onClick={() => navigate("/profile")}
-                  className="text-xs px-4 py-2 font-medium text-primary border-b border-primaryBorder"
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    navigate("/profile");
+                  }}
+                  className="flex items-center gap-2 text-xs p-4 font-medium text-primaryText border-b border-primary/50 w-full text-right cursor-pointer"
                 >
+                  <User size={16} className="text-primary" />
                   الملف الشخصي
                 </button>
-                <button className="text-xs px-4 py-2 font-medium text-primary">
+                <button
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                  }}
+                  className="flex items-center gap-2 text-xs p-4 font-medium text-primaryText w-full text-right cursor-pointer"
+                >
+                  <LogOut size={16} className="text-primary" />
                   تسجيل خروج
                 </button>
               </div>
@@ -54,6 +63,7 @@ export const Navbar = () => {
           </Button>
         )}
 
+
         <button
           aria-label="Toggle Menu"
           onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -63,7 +73,7 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {isMenuOpen && <MobileNavbar isOpen={isMenuOpen} />}
+      {isMenuOpen && <MobileNavbar isOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />}
     </nav>
   );
 };

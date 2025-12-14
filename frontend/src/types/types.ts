@@ -15,3 +15,7 @@ export interface AppFormProps {
 export interface ProtectedRouteProps {
   allowedRoles?: string[];
 }
+export interface MobileNavbarProps {
+  isOpen: boolean;
+  setIsMenuOpen: (value: boolean) => void;
+}
