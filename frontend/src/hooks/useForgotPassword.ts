@@ -11,7 +11,6 @@ export const useForgotPassword = () => {
     mutationFn: authService.forgotPassword,
     onSuccess: (data) => {
       toast.success(data?.message || "تم إرسال رمز التحقق إلى بريدك");
-      console.log(data);
       navigate("/verify-reset-otp", { state: data.data });
     },
     onError: (error: any) => {

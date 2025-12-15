@@ -15,7 +15,7 @@ export const authService = {
     const response = await api.post("auth/register", data);
     return response.data;
   },
-   verifyEmail: async (data: VerifyOtpFormData) => {
+  verifyEmail: async (data: VerifyOtpFormData) => {
     const response = await api.post("auth/verify-email", data);
     return response.data;
   },
@@ -34,5 +34,9 @@ export const authService = {
   getCurrentUser: async () => {
     const response = await api.get("auth/profile");
     return response.data.data;
+  },
+  logout: async () => {
+    const response = await api.post("auth/logout");
+    return response.data;
   },
 };

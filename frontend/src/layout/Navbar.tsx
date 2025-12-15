@@ -6,15 +6,17 @@ import { MobileNavbar } from "./MobileNavbar";
 import { NavLinks } from "./NavLinks";
 import { useNavigate } from "react-router-dom";
 import { useGetCurrentUser } from "../hooks/useGetCurrentUser";
+import { useLogout } from "../hooks/useLogout";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: user, isLoading } = useGetCurrentUser();
+  const { mutate } = useLogout()
   console.log(user);
   return (
-    <nav className={`py-6 relative shadow-md ${isMenuOpen?"bg-background":"bg-white"}`}>
+    <nav className={`py-6 relative shadow-md ${isMenuOpen ? "bg-background" : "bg-white"}`}>
       <div className="flex-center justify-between container flex-wrap h-10">
         <Logo />
         <NavLinks />
@@ -47,6 +49,7 @@ export const Navbar = () => {
                 </button>
                 <button
                   onClick={() => {
+                    mutate()
                     setIsDropdownOpen(false);
                   }}
                   className="flex items-center gap-2 text-xs p-4 font-medium text-primaryText w-full text-right cursor-pointer"
@@ -62,8 +65,6 @@ export const Navbar = () => {
             تسجيل دخول
           </Button>
         )}
-
-
         <button
           aria-label="Toggle Menu"
           onClick={() => setIsMenuOpen((prev) => !prev)}
