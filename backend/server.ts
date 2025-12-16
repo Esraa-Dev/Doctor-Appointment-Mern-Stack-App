@@ -7,10 +7,11 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { connectCloudinary } from "./config/cloudinary.js";
 
-import userRouter from "./routes/user.js";
+import authRouter from "./routes/auth.js";
 import doctorRouter from "./routes/doctor.js";
 import appointmentRouter from "./routes/appointment.js";
 import departmentRouter from "./routes/department.js";
+import patientRouter from "./routes/patient.js";
 
 dotenv.config();
 connectDb();
@@ -30,7 +31,8 @@ app.use("/uploads", express.static("uploads"));
 app.use(cookieParser());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use("/api/v1/auth", userRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/patient", patientRouter);
 app.use("/api/v1/appointments", appointmentRouter);
 app.use("/api/v1/departments", departmentRouter);
 app.use("/api/v1/admin", doctorRouter);

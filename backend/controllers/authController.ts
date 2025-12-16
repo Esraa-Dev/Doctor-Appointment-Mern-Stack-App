@@ -45,7 +45,7 @@ export const registerUser = AsyncHandler(
       throw new ApiError("Validation failed", 400, messages);
     }
 
-    const { name, email, password, address, gender, dob, phone, role } =
+    const { firstName,lastName, email, password, address, gender, dob, phone, role } =
       req.body;
 
     const existingUser = await User.findOne({ email });
@@ -55,7 +55,8 @@ export const registerUser = AsyncHandler(
     const verifyOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
     const newUser = new User({
-      name,
+      firstName,
+      lastName,
       email,
       password,
       address,
@@ -69,7 +70,7 @@ export const registerUser = AsyncHandler(
 
     await newUser.save();
 
-    const mailgenContent = await emailVerificationContent(name, verifyOtp);
+    const mailgenContent = await emailVerificationContent(firstName, verifyOtp);
 
     await sendEmail({
       email: newUser.email,
@@ -156,7 +157,7 @@ export const login = AsyncHandler(async (req: Request, res: Response) => {
 
   const userResponse = {
     id: user._id,
-    name: user.name,
+    firstName: user.firstName,
     email: user.email,
     role: user.role,
     image: user.image,
@@ -206,7 +207,7 @@ export const forgotPassword = AsyncHandler(
     }
     const resetOtp = user.generateOtp("reset");
     await user.save({ validateBeforeSave: false });
-    const mailgenContent = await forgotPasswordContent(user.name, resetOtp);
+    const mailgenContent = await forgotPasswordContent(user.firstName, resetOtp);
 
     await sendEmail({
       email: user.email,

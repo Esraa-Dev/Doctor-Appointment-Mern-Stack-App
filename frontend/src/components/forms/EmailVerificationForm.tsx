@@ -5,7 +5,7 @@ import AppForm from "./AppForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpSchema, type VerifyOtpFormData } from "../../validations/otpSchema";
-import { useVerifyEmail } from "../../hooks/useVerifyEmail";
+import { useVerifyEmail } from "../../hooks/auth/useVerifyEmail";
 
 const EmailVerificationForm = () => {
   const [code, setCode] = useState(Array(6).fill(""));

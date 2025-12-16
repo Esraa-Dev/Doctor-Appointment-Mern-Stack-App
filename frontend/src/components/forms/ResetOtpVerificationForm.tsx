@@ -5,7 +5,7 @@ import AppForm from "./AppForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetOtpSchema, type ResetOtpFormData } from "../../validations/resetOtpSchema";
-import { useVerifyResetOtp } from "../../hooks/useVerifyResetOtp";
+import { useVerifyResetOtp } from "../../hooks/auth/useVerifyResetOtp";
 import { useLocation } from "react-router-dom";
 export const ResetOtpVerificationForm = () => {
     const [code, setCode] = useState(Array(6).fill(""));

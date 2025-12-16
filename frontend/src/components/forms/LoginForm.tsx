@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/Button";
 import { Link } from "react-router-dom";
 import AppForm from "./AppForm";
-import { useLogin } from "../../hooks/useLogin";
 import { loginSchema, type LoginFormData } from "../../validations/loginSchema"
+import { useLogin } from "../../hooks/auth/useLogin";
 
 const LoginForm = () => {
   const {

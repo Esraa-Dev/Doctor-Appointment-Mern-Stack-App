@@ -5,7 +5,7 @@ import { Button } from "../ui/Button";
 import { Link } from "react-router-dom";
 import AppForm from "./AppForm";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForgotPassword } from "../../hooks/useForgotPassword";
+import { useForgotPassword } from "../../hooks/auth/useForgotPassword";
 import { forgotPasswordSchema, type ForgotPasswordFormData } from "../../validations/forgotPasswordSchema";
 
 export const ForgotPasswordForm = () => {

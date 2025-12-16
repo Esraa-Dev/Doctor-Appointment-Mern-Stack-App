@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Appointment from "../models/AppointmentSchema.js";
+import {Appointment} from "../models/AppointmentSchema.js";
 import User from "../models/UserSchema.js";
 
 export const createAppointment = async (req: Request, res: Response) => {

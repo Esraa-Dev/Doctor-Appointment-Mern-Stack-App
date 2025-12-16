@@ -2,13 +2,9 @@ import { z } from "zod";
 
 export const registerSchema = z
   .object({
-    name: z
-      .string()
-      .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف"),
-
-    email: z
-      .string()
-      .email("البريد الإلكتروني غير صالح"),
+    firstName: z.string().min(3, "الاسم يجب أن يكون على الأقل 3 أحرف"),
+    lastName: z.string().min(3, "الاسم يجب أن يكون على الأقل 3 أحرف"),
+    email: z.string().email("البريد الإلكتروني غير صالح"),
 
     phone: z
       .string()
@@ -16,9 +12,7 @@ export const registerSchema = z
       .min(10, "رقم الهاتف يجب أن يكون على الأقل 10 أرقام")
       .max(15, "رقم الهاتف يجب ألا يتجاوز 15 رقم"),
 
-    password: z
-      .string()
-      .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
+    password: z.string().min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
 
     confirmPassword: z.string(),
   })
@@ -28,4 +22,3 @@ export const registerSchema = z
   });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
-

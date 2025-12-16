@@ -1,5 +1,4 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import { Footer } from "./layout/Footer";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import DashboardLayout from "./layout/DashboardLayout";
@@ -36,15 +35,20 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/no-access" element={<NoAccess />} />
-          <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
-            <Route path="/profile" element={<MyProfile />} />
-            <Route path="/appointments" element={<MyAppointment />} />
-            <Route path="/appointments/:docId" element={<Appointment />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
+          <Route path="/profile" element={<MyProfile />} />
+          <Route path="/appointments" element={<MyAppointment />} />
+          <Route path="/appointments/:docId" element={<Appointment />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["admin", "doctor"]} />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardOverview />} />
           </Route>
         </Route>
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardOverview />} />
-        </Route>
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

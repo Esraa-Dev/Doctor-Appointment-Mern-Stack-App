@@ -5,8 +5,8 @@ import { Logo } from "../components/ui/Logo";
 import { MobileNavbar } from "./MobileNavbar";
 import { NavLinks } from "./NavLinks";
 import { useNavigate } from "react-router-dom";
-import { useGetCurrentUser } from "../hooks/useGetCurrentUser";
-import { useLogout } from "../hooks/useLogout";
+import { useGetCurrentUser } from "../hooks/auth/useGetCurrentUser";
+import { useLogout } from "../hooks/auth/useLogout";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const Navbar = () => {
                 alt={user.name}
                 className="w-10 h-10 p-1 rounded-full object-cover border border-primary/45"
               />
-              <span className="font-medium text-sm text-primaryText">{user.name}</span>
+              <span className="font-medium text-sm text-primaryText">{user.firstName}</span>
               <ChevronDown size={16} className="font-medium text-primary" />
             </button>
 

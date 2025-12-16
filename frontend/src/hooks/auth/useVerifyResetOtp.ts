@@ -1,19 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
-import { authService } from "../services/authService";
+import { authService } from "../../services/authService";
 import { toast } from "react-toastify";
-import { getApiErrorMessage } from "../utils/apiError";
 import { useNavigate } from "react-router-dom";
 
-export const useVerifyEmail = () => {
+export const useVerifyResetOtp = () => {
   const navigate = useNavigate();
+
   return useMutation({
-    mutationFn: authService.verifyEmail,
+    mutationFn: authService.verifyResetOtp,
+
     onSuccess: (data) => {
       toast.success(data.message);
-      navigate("/login");
+      navigate("/reset-password", { state: data.data });
     },
+
     onError: (error: any) => {
-      toast.error(getApiErrorMessage(error, "حدث خطأ أثناء التحقق"));
+      toast.error(error?.response?.data?.message || "فشل التحقق من الرمز");
     },
   });
 };

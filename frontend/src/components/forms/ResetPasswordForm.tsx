@@ -3,7 +3,7 @@ import { TextInput } from "../ui/TextInput";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/Button";
 import AppForm from "./AppForm";
-import { useResetPassword } from "../../hooks/useResetPassword";
+import { useResetPassword } from "../../hooks/auth/useResetPassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema, type ResetPasswordFormData } from "../../validations/resetPasswordSchema";
 import { useLocation } from "react-router-dom";
@@ -14,13 +14,13 @@ const ResetPasswordForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolvergit(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordSchema),
   });
   const { mutate, isPending } = useResetPassword();
-   const location = useLocation();
-    const userEmail = location.state?.email;
+  const location = useLocation();
+  const userEmail = location.state?.email;
   const onSubmit = (data: ResetPasswordFormData) => {
-        mutate({ ...data, email: userEmail })
+    mutate({ ...data, email: userEmail })
   };
 
   return (

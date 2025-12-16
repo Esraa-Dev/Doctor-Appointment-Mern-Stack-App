@@ -5,9 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/Button";
 import { Link } from "react-router-dom";
 import AppForm from "./AppForm";
-import { useRegister } from "../../hooks/useRegister";
-import { registerSchema, type RegisterFormData } from "../../validations/registerSchema";
-
+import { useRegister } from "../../hooks/auth/useRegister";
+import {
+    registerSchema,
+    type RegisterFormData,
+} from "../../validations/registerSchema";
 
 export const RegisterForm = () => {
     const {
@@ -26,14 +28,21 @@ export const RegisterForm = () => {
         <AppForm title="إنشاء حساب جديد">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <TextInput
-                    label="الاسم الكامل"
+                    label="الاسم الأول"
                     Icon={User}
                     type="text"
-                    placeholder="أدخل اسمك الكامل"
-                    register={register("name")}
-                    error={errors.name}
+                    placeholder="أدخل الاسم الأول"
+                    register={register("firstName")}
+                    error={errors.firstName}
                 />
-
+                <TextInput
+                    label=" الاسم الأخير"
+                    Icon={User}
+                    type="text"
+                    placeholder="أدخل الاسم الأخير"
+                    register={register("lastName")}
+                    error={errors.lastName}
+                />
                 <TextInput
                     label="البريد الإلكتروني"
                     Icon={Mail}

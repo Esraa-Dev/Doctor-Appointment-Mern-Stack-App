@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Department from "../models/DepartmentSchema.js";
+import {Department} from "../models/DepartmentSchema.js";
 import User from "../models/UserSchema.js";
 
 export const createDepartment = async (req: Request, res: Response) => {

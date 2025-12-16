@@ -1,21 +1,36 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
-interface IDepartment extends Document {
+export interface IDepartment extends Document {
   name: string;
-  description: string;
-  image: string;
+  description?: string;
+  icon?: string;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  doctorsCount: number;
 }
 
-const departmentSchema: Schema = new Schema({
-  name: { type: String, required: true, unique: true },
-  description: { type: String, required: true },
-  image: { type: String },
-  isActive: { type: Boolean, default: true },
-}, { timestamps: true });
+const DepartmentSchema: Schema = new Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  description: {
+    type: String,
+  },
+  icon: {
+    type: String,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  doctorsCount: {
+    type: Number,
+    default: 0,
+  }
+}, { 
+  timestamps: true 
+});
 
-const Department = mongoose.model<IDepartment>("Department", departmentSchema);
-
-export default Department;
+export const Department = mongoose.model<IDepartment>("Department", DepartmentSchema);

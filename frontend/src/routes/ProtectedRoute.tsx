@@ -1,11 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useGetCurrentUser } from "../hooks/useGetCurrentUser"
+import { useGetCurrentUser } from "../hooks/auth/useGetCurrentUser"
 import type { ProtectedRouteProps } from "../types/types";
 
 export const ProtectedRoute = ({ allowedRoles = [] }: ProtectedRouteProps) => {
     const { data: user, isLoading } = useGetCurrentUser()
-
-    console.log(user)
     if (isLoading) {
         return <div>loading</div>
     }
