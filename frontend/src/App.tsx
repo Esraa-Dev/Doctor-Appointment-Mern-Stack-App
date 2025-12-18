@@ -17,42 +17,52 @@ import ResetOtpVerificationPage from "./pages/ResetOtpVerificationPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import NoAccess from "./pages/NoAccess";
 import NotFoundPage from "./pages/NotFoundPage";
-import PublicRoute from "./routes/PublicRoute";
+
+import MainLayout from "./layout/MainLayout";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<PublicRoute />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordForm />} />
-          <Route path="/verify-email" element={<EmailVerificationForm />} />
-          <Route path="/verify-reset-otp" element={<ResetOtpVerificationPage />} />
-          <Route path="/doctors" element={<DoctorPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/no-access" element={<NoAccess />} />
-        </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
-          <Route path="/profile" element={<MyProfile />} />
-          <Route path="/appointments" element={<MyAppointment />} />
-          <Route path="/appointments/:docId" element={<Appointment />} />
-        </Route>
+        {/* 🔹 Layout Route */}
+        <Route element={<MainLayout />}>
 
-        <Route element={<ProtectedRoute allowedRoles={["admin", "doctor"]} />}>
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<DashboardOverview />} />
+          {/* 🔓 Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordForm />} />
+            <Route path="/verify-email" element={<EmailVerificationForm />} />
+            <Route path="/verify-reset-otp" element={<ResetOtpVerificationPage />} />
+            <Route path="/doctors" element={<DoctorPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/no-access" element={<NoAccess />} />
+
+          {/*  Patient */}
+          <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
+            <Route path="/profile" element={<MyProfile />} />
+            <Route path="/appointments" element={<MyAppointment />} />
+            <Route path="/appointments/:docId" element={<Appointment />} />
           </Route>
+
+          {/*  Admin / Doctor */}
+          <Route element={<ProtectedRoute allowedRoles={["admin", "doctor"]} />}>
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardOverview />} />
+            </Route>
+          </Route>
+
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
+
       </Routes>
     </BrowserRouter>
   );
 };
 
 export default App;
+

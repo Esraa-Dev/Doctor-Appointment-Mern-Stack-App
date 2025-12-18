@@ -28,11 +28,15 @@ export interface IPatient extends IUser {
 const PatientSchema: Schema = new Schema({
   dateOfBirth: {
     type: Date,
+    default: null,
   },
+
   gender: {
     type: String,
     enum: Object.values(Gender),
+    default: null,
   },
+
   bloodGroup: {
     type: String,
     enum: Object.values(BloodGroup),
@@ -40,31 +44,39 @@ const PatientSchema: Schema = new Schema({
   },
 
   address: {
-    address1: { type: String },
-    address2: { type: String },
-    city: { type: String },
-    state: { type: String },
-    country: { type: String },
-    pincode: { type: String },
+    address1: { type: String, default: null },
+    address2: { type: String, default: null },
+    city: { type: String, default: null },
+    state: { type: String, default: null },
+    country: { type: String, default: null },
+    pincode: { type: String, default: null },
   },
 
   emergencyContact: {
-    name: { type: String },
+    name: { type: String, default: null },
     relationship: {
       type: String,
       enum: ["spouse", "parent", "child", "sibling", "friend", "other"],
+      default: null,
     },
-    phone: { type: String },
+    phone: { type: String, default: null },
   },
 
   primaryDoctor: {
     type: Schema.Types.ObjectId,
     ref: "Doctor",
+    default: null,
   },
 
-  medicalHistory: { type: String },
+  medicalHistory: {
+    type: String,
+    default: null,
+  },
 
-  allergies: [{ type: String }],
+  allergies: {
+    type: [String],
+    default: [],
+  },
 
   status: {
     type: String,

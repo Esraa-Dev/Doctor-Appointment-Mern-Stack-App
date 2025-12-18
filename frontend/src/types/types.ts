@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import type { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 export interface TextInputProps {
@@ -18,4 +19,72 @@ export interface ProtectedRouteProps {
 export interface MobileNavbarProps {
   isOpen: boolean;
   setIsMenuOpen: (value: boolean) => void;
+}
+export interface ProfileHeaderProps {
+  firstName: string;
+  lastName: string;
+  image: string;
+  createdAt: string;
+}
+interface tabsProps {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+}
+export interface PatientSidebarTabsProps {
+  tabs: Array<tabsProps>;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
+
+export interface InfoItemProps {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+}
+export interface PatientAddress {
+  address1: string;
+  address2?: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+}
+
+export interface EmergencyContact {
+  name: string;
+  relationship: "spouse" | "parent" | "child" | "sibling" | "friend" | "other";
+  phone: string;
+}
+
+export interface PatientProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  image: string;
+  dateOfBirth: string | null;
+  gender: "male" | "female" | "other" | string;
+  bloodGroup:
+    | "A+"
+    | "A-"
+    | "B+"
+    | "B-"
+    | "AB+"
+    | "AB-"
+    | "O+"
+    | "O-"
+    | "Unknown"
+    | string;
+  address: PatientAddress;
+  emergencyContact?: EmergencyContact;
+  medicalHistory: string;
+  allergies: string[];
+  status: "active" | "inactive";
+  createdAt: string;
+  updatedAt: string;
+}
+export interface PatientPersonalInfoProps {
+  userData: PatientProfile;
 }

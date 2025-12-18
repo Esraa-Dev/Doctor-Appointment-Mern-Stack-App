@@ -29,7 +29,7 @@ export const Navbar = () => {
               <img
                 src={user.image}
                 alt={user.name}
-                className="w-10 h-10 p-1 rounded-full object-cover border border-primary/45"
+                className="w-10 h-10 rounded-full object-cover border border-primary/45"
               />
               <span className="font-medium text-sm text-primaryText">{user.firstName}</span>
               <ChevronDown size={16} className="font-medium text-primary" />
