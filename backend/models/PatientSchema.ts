@@ -119,6 +119,26 @@ export const updateProfileSchema = Joi.object({
   allergies: Joi.array().items(Joi.string()).default([]),
 });
 
+export const updateProfileImage = Joi.object({
+  file: Joi.object({
+    mimetype: Joi.string()
+      .valid("image/jpeg", "image/png", "image/jpg", "image/webp")
+      .messages({
+        "any.only": "Only JPEG, PNG, JPG or WebP images are allowed",
+      }),
+  size: Joi.number()
+      .max(2 * 1024 * 1024) // 2 MB
+      .messages({
+        "number.max": "Profile image must be less than or equal to 2 MB",
+      }),
+  })
+    .unknown(true) 
+    .required()
+    .messages({
+      "any.required": "Profile image is required",
+    }),
+});
+
 export const Patient = User.discriminator<IPatient>(
   UserRole.PATIENT,
   PatientSchema

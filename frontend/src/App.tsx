@@ -25,21 +25,21 @@ const App = () => {
     <BrowserRouter>
       <Routes>
 
-        {/* 🔹 Layout Route */}
+        {/*  Layout Route */}
         <Route element={<MainLayout />}>
 
-          {/* 🔓 Public Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordForm />} />
-            <Route path="/verify-email" element={<EmailVerificationForm />} />
-            <Route path="/verify-reset-otp" element={<ResetOtpVerificationPage />} />
-            <Route path="/doctors" element={<DoctorPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/no-access" element={<NoAccess />} />
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordForm />} />
+          <Route path="/verify-email" element={<EmailVerificationForm />} />
+          <Route path="/verify-reset-otp" element={<ResetOtpVerificationPage />} />
+          <Route path="/doctors" element={<DoctorPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/no-access" element={<NoAccess />} />
 
           {/*  Patient */}
           <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>

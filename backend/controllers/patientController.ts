@@ -1,9 +1,14 @@
 import { Request, Response } from "express";
-import { Patient, updateProfileSchema } from "../models/PatientSchema";
+import {
+  Patient,
+  updateProfileImage,
+  updateProfileSchema,
+} from "../models/PatientSchema";
 import { AsyncHandler } from "../utils/AsyncHandler";
 import { ApiResponse } from "../utils/ApiResponse";
 import { ApiError } from "../utils/ApiError";
-
+import fs from "fs";
+import { cloudinaryUploadImage } from "../utils/cloudinary";
 export const getPatientProfile = AsyncHandler(
   async (req: Request, res: Response) => {
     const _id = req.user?._id;
@@ -43,5 +48,47 @@ export const updateProfileInfo = AsyncHandler(
     res
       .status(200)
       .json(new ApiResponse("Profile updated Successfully", patient, 200));
+  }
+);
+
+export const uploadProfileImage = AsyncHandler(
+  async (req: Request, res: Response) => {
+    const _id = req.user?._id;
+    if (!req.file) {
+      throw new ApiError("Validation failed", 400, [
+        "Profile image is required",
+      ]);
+    }
+    const { error } = updateProfileImage.validate(
+      { file: req.file },
+      { abortEarly: false }
+    );
+    if (error) {
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+    }
+    if (error) {
+      const messages = error.details.map((err) => {
+        return err.message.replace(/["]/g, "");
+      });
+      throw new ApiError("Validation failed", 400, messages);
+    }
+    const result = await cloudinaryUploadImage(req.file.path);
+
+    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    const patient = await Patient.findByIdAndUpdate(
+      _id,
+      { $set: { image: result.secure_url } },
+      { new: true }
+    ).select(
+      "-password -refreshToken -verifyOtp -resetPasswordOtp -isEmailVerified -role -isActive -__v"
+    );
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse("Profile image updated successfully", patient, 200)
+      );
   }
 );
