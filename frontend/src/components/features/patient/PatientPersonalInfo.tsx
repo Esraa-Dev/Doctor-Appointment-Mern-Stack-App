@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Calendar,
   Edit,
@@ -12,13 +13,22 @@ import { Button } from "../../ui/Button";
 import InfoItem from "./InfoItem";
 import { formatDate } from "../../../utils/formatDate";
 import type { PatientPersonalInfoProps } from "../../../types/types";
+import PatientProfileForm from "./PatientProfileForm";
 
 export const PatientPersonalInfo = ({ userData }: PatientPersonalInfoProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+
   if (!userData) {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">لا توجد بيانات</p>
       </div>
+    );
+  }
+
+  if (isEditing) {
+    return (
+      <PatientProfileForm userData={userData} setIsEditing={setIsEditing} />
     );
   }
 
@@ -28,7 +38,7 @@ export const PatientPersonalInfo = ({ userData }: PatientPersonalInfoProps) => {
         <h2 className="text-2xl font-bold text-primaryText">
           المعلومات الشخصية
         </h2>
-        <Button>
+        <Button onClick={() => setIsEditing(true)}>
           <Edit className="w-4 h-4 ml-2" />
           تعديل
         </Button>
@@ -38,116 +48,99 @@ export const PatientPersonalInfo = ({ userData }: PatientPersonalInfoProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InfoItem
             icon={User}
-            label={"الاسم الكامل"}
+            label="الاسم الكامل"
             value={
               `${userData.firstName} ${userData.lastName}`.trim() || "غير محدد"
             }
           />
-
           <InfoItem
             icon={Mail}
-            label={"البريد الإلكتروني"}
+            label="البريد الإلكتروني"
             value={userData.email || "غير محدد"}
           />
-
           <InfoItem
             icon={Phone}
-            label={"رقم الهاتف"}
+            label="رقم الهاتف"
             value={userData.phone || "غير محدد"}
           />
-
           <InfoItem
             icon={Calendar}
-            label={"تاريخ الميلاد"}
+            label="تاريخ الميلاد"
             value={formatDate(userData.dateOfBirth)}
           />
-
           <InfoItem
             icon={User}
-            label={"الجنس"}
+            label="الجنس"
             value={userData.gender || "غير محدد"}
           />
-
           <InfoItem
             icon={Shield}
-            label={"فصيلة الدم"}
+            label="فصيلة الدم"
             value={userData.bloodGroup || "غير محدد"}
           />
         </div>
       </div>
 
       <div className="bg-white rounded-2xl border border-primaryBorder p-6">
-        <h3 className="text-xl font-bold text-primaryText mb-6">العنوان</h3>
+        <h3 className="text-xl font-bold mb-6">العنوان</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InfoItem
             icon={MapPin}
-            label={"العنوان الرئيسي"}
-            value={userData.address.address1 || "غير محدد"}
+            label="العنوان"
+            value={userData.address?.address1 || "غير محدد"}
           />
-
           <InfoItem
             icon={MapPin}
-            label={"العنوان الثانوي"}
-            value={userData.address.address2 || "غير محدد"}
+            label="عنوان إضافي"
+            value={userData.address?.address2 || "غير محدد"}
           />
-
           <InfoItem
             icon={MapPin}
-            label={"المدينة"}
-            value={userData.address.city || "غير محدد"}
+            label="المدينة"
+            value={userData.address?.city || "غير محدد"}
           />
-
           <InfoItem
             icon={MapPin}
-            label={"الولاية"}
-            value={userData.address.state || "غير محدد"}
+            label="المحافظة"
+            value={userData.address?.state || "غير محدد"}
           />
-
           <InfoItem
             icon={MapPin}
-            label={"البلد"}
-            value={userData.address.country || "غير محدد"}
+            label="الدولة"
+            value={userData.address?.country || "غير محدد"}
           />
-
           <InfoItem
             icon={MapPin}
-            label={"الرمز البريدي"}
-            value={userData.address.pincode || "غير محدد"}
+            label="الرمز البريدي"
+            value={userData.address?.pincode || "غير محدد"}
           />
         </div>
       </div>
 
       <div className="bg-white rounded-2xl border border-primaryBorder p-6">
-        <h3 className="text-xl font-bold text-primaryText mb-6">
-          جهة الاتصال في حالة الطوارئ
-        </h3>
+        <h3 className="text-xl font-bold mb-6">جهة الاتصال في الطوارئ</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InfoItem
             icon={User}
-            label={"الاسم"}
+            label="الاسم"
             value={userData.emergencyContact?.name || "غير محدد"}
           />
-
           <InfoItem
             icon={Heart}
-            label={"العلاقة"}
+            label="صلة القرابة"
             value={userData.emergencyContact?.relationship || "غير محدد"}
           />
-
           <InfoItem
             icon={Phone}
-            label={"رقم الهاتف"}
+            label="الهاتف"
             value={userData.emergencyContact?.phone || "غير محدد"}
           />
         </div>
       </div>
 
       <div className="bg-white rounded-2xl border border-primaryBorder p-6">
-        <h3 className="text-xl font-bold text-primaryText mb-6">
-          المعلومات الطبية
-        </h3>
+        <h3 className="text-xl font-bold mb-6">المعلومات الطبية</h3>
 
-        {/* Allergies */}
         <div className="mb-6">
           <h4 className="font-medium text-gray-700 mb-3">الحساسية</h4>
           {userData.allergies && userData.allergies.length > 0 ? (
@@ -155,7 +148,7 @@ export const PatientPersonalInfo = ({ userData }: PatientPersonalInfoProps) => {
               {userData.allergies.map((allergy: string, index: number) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm"
+                  className="px-4 py-2 bg-primary/5 text-primary rounded-full text-sm"
                 >
                   {allergy}
                 </span>
@@ -166,14 +159,11 @@ export const PatientPersonalInfo = ({ userData }: PatientPersonalInfoProps) => {
           )}
         </div>
 
-        {/* Medical History */}
         <div>
           <h4 className="font-medium text-gray-700 mb-3">السجل الطبي</h4>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-gray-700 whitespace-pre-line">
-              {userData.medicalHistory || "لا يوجد سجل طبي مسجل"}
-            </p>
-          </div>
+          <p className="text-gray-700 whitespace-pre-line">
+            {userData.medicalHistory || "لا يوجد سجل طبي مسجل"}
+          </p>
         </div>
       </div>
     </div>

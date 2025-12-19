@@ -1,19 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authService } from "../../services/authService";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "../../utils/apiError";
+import { patientService } from "../../services/patientService";
 
-export const useLogout = () => {
-  const navigate = useNavigate();
+export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: authService.logout,
+    mutationFn: patientService.updateProfileInfo,
     onSuccess: (data) => {
-      queryClient.setQueryData(["currentUser"], null);
-      toast.success(data.message);
-      navigate("/login");
-      console.log(data);
+      toast.success(data?.message || "Profile updated successfully!");
+      queryClient.setQueryData(["patientProfile"], data);
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
 
     onError: (error: any) => {

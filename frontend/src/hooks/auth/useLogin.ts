@@ -17,7 +17,7 @@ export const useLogin = () => {
       navigate("/");
     },
     onError: (error: any) => {
-      toast.error(getApiErrorMessage(error, "Login failed"));
+      toast.error(getApiErrorMessage(error, "حدث خطأ ما"));
     },
   });
 };

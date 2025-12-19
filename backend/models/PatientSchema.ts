@@ -91,8 +91,8 @@ const PatientSchema: Schema = new Schema({
 });
 
 export const updateProfileSchema = Joi.object({
-  firstName: Joi.string().min(2).max(50),
-  lastName: Joi.string().min(2).max(50),
+  firstName: Joi.string().min(3).max(50),
+  lastName: Joi.string().min(3).max(50),
   phone: Joi.string().pattern(/^\+?[0-9]{10,15}$/),
   dateOfBirth: Joi.date().iso(),
   gender: Joi.string().valid(...Object.values(Gender)),

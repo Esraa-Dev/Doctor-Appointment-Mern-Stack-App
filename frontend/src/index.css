@@ -32,3 +32,13 @@ body,
   --color-primaryBorder: #e7e8eb;
   --color-background: #f4f4f4;
 }
+input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  filter: invert(22%) sepia(7%) saturate(300%) hue-rotate(10deg) brightness(95%) contrast(90%);
+}
+input[type="date"] {
+  direction: rtl;
+  text-align: right;
+}
