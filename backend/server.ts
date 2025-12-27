@@ -6,12 +6,14 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { connectCloudinary } from "./config/cloudinary.js";
+import morgan from "morgan";
 
 import authRouter from "./routes/auth.js";
 import doctorRouter from "./routes/doctor.js";
 import appointmentRouter from "./routes/appointment.js";
 import departmentRouter from "./routes/department.js";
 import patientRouter from "./routes/patient.js";
+import helmet from "helmet";
 
 dotenv.config();
 connectDb();
@@ -21,6 +23,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(morgan("dev"));
 app.use(
   cors({
     origin: ["http://localhost:3000", "http://localhost:5173"],
@@ -29,13 +32,14 @@ app.use(
 );
 app.use("/uploads", express.static("uploads"));
 app.use(cookieParser());
+app.use(helmet());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/patient", patientRouter);
 app.use("/api/v1/appointments", appointmentRouter);
 app.use("/api/v1/departments", departmentRouter);
-app.use("/api/v1/admin", doctorRouter);
+app.use("/api/v1/doctors", doctorRouter);
 
 app.use(errorHandler);
 
