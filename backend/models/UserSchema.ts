@@ -23,6 +23,7 @@ export interface IUser extends Document {
   resetPasswordOtpExpireAt?: Date;
   refreshToken?: string;
   isActive: boolean;
+  profileStatus?: string; 
   isPasswordValid(password: string): Promise<boolean>;
   generateOtp(type: string): string;
   generateAccessToken(): string;
@@ -54,7 +55,6 @@ const UserSchema: Schema = new Schema(
     },
     image: {
       type: String,
-      default: "",
     },
     phone: {
       type: String,
@@ -107,10 +107,10 @@ UserSchema.methods.generateOtp = function (type = "verification") {
 
   if (type === "verification") {
     this.verifyOtp = otp;
-    this.verifyOtpExpireAt = new Date(Date.now() + 10 * 60 * 1000);
+    this.verifyOtpExpireAt = new Date(Date.now() + 10 * 80 * 1000);
   } else if (type === "reset") {
     this.resetPasswordOtp = otp;
-    this.resetPasswordOtpExpireAt = new Date(Date.now() + 10 * 60 * 1000);
+    this.resetPasswordOtpExpireAt = new Date(Date.now() + 10 * 80 * 1000);
   }
 
   return otp;
@@ -145,9 +145,9 @@ export const registerValidation = Joi.object({
     "string.empty": "Email is required",
     "string.email": "Invalid email format",
   }),
-  password: Joi.string().min(6).required().messages({
+  password: Joi.string().min(8).required().messages({
     "string.empty": "Password is required",
-    "string.min": "Password must be at least 6 characters",
+    "string.min": "Password must be at least 8 characters",
   }),
   confirmPassword: Joi.string().required().valid(Joi.ref("password")).messages({
     "any.only": "Passwords must match",
@@ -164,7 +164,10 @@ export const registerValidation = Joi.object({
     }),
   role: Joi.string()
     .valid(...Object.values(UserRole))
-    .optional(),
+    .default(UserRole.PATIENT)
+    .messages({
+      "any.only": "Role must be one of: patient, doctor",
+    }),
 });
 
 export const loginValidation = Joi.object({
@@ -190,12 +193,12 @@ export const verifyResetOtpValidation = Joi.object({
     "string.email": "Invalid email format",
   }),
   resetPasswordOtp: Joi.string()
-    .length(6)
+    .length(8)
     .pattern(/^\d+$/)
     .required()
     .messages({
       "string.empty": "OTP is required",
-      "string.length": "OTP must be 6 digits",
+      "string.length": "OTP must be 8 digits",
       "string.pattern.base": "OTP must contain only numbers",
     }),
 });
@@ -205,9 +208,9 @@ export const resetPasswordValidation = Joi.object({
     "string.empty": "Email is required",
     "string.email": "Invalid email format",
   }),
-  password: Joi.string().min(6).required().messages({
+  password: Joi.string().min(8).required().messages({
     "string.empty": "Password is required",
-    "string.min": "Password must be at least 6 characters",
+    "string.min": "Password must be at least 8 characters",
   }),
   confirmPassword: Joi.string().required().valid(Joi.ref("password")).messages({
     "any.only": "Passwords must match",

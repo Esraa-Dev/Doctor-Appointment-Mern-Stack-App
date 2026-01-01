@@ -36,19 +36,16 @@ const PatientSchema: Schema = new Schema({
     type: Date,
     default: null,
   },
-
   gender: {
     type: String,
     enum: Object.values(Gender),
     default: null,
   },
-
   bloodGroup: {
     type: String,
     enum: Object.values(BloodGroup),
     default: BloodGroup.UNKNOWN,
   },
-
   address: {
     address1: { type: String, default: null },
     address2: { type: String, default: null },
@@ -57,32 +54,28 @@ const PatientSchema: Schema = new Schema({
     country: { type: String, default: null },
     pincode: { type: String, default: null },
   },
-
   emergencyContact: {
     name: { type: String, default: null },
     relationship: {
-      type: Object.values(EmergencyRelationship),
+      type: String,
+      enum: Object.values(EmergencyRelationship),
       default: null,
     },
     phone: { type: String, default: null },
   },
-
   primaryDoctor: {
     type: Schema.Types.ObjectId,
     ref: "Doctor",
     default: null,
   },
-
   medicalHistory: {
     type: String,
     default: null,
   },
-
   allergies: {
     type: [String],
     default: [],
   },
-
   status: {
     type: String,
     enum: ["active", "inactive"],
@@ -97,7 +90,6 @@ export const updateProfileSchema = Joi.object({
   dateOfBirth: Joi.date().iso(),
   gender: Joi.string().valid(...Object.values(Gender)),
   bloodGroup: Joi.string().valid(...Object.values(BloodGroup)),
-
   address: Joi.object({
     address1: Joi.string().allow("", null),
     address2: Joi.string().allow("", null),
@@ -106,7 +98,6 @@ export const updateProfileSchema = Joi.object({
     country: Joi.string().allow("", null),
     pincode: Joi.string().allow("", null),
   }),
-
   emergencyContact: Joi.object({
     name: Joi.string().allow("", null),
     relationship: Joi.string()
@@ -114,7 +105,6 @@ export const updateProfileSchema = Joi.object({
       .allow("", null),
     phone: Joi.string().allow("", null),
   }).allow(null),
-
   medicalHistory: Joi.string().allow("", null),
   allergies: Joi.array().items(Joi.string()).default([]),
 });
@@ -126,13 +116,13 @@ export const updateProfileImage = Joi.object({
       .messages({
         "any.only": "Only JPEG, PNG, JPG or WebP images are allowed",
       }),
-  size: Joi.number()
-      .max(2 * 1024 * 1024) // 2 MB
+    size: Joi.number()
+      .max(2 * 1024 * 1024)
       .messages({
         "number.max": "Profile image must be less than or equal to 2 MB",
       }),
   })
-    .unknown(true) 
+    .unknown(true)
     .required()
     .messages({
       "any.required": "Profile image is required",

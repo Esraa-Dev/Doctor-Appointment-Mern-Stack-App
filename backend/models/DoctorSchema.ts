@@ -1,269 +1,140 @@
 import mongoose, { Schema } from "mongoose";
 import { User, IUser } from "./UserSchema.js";
-import { UserRole, Gender, BloodGroup, DaysOfWeek } from "../constants.js";
+import { UserRole } from "../constants.js";
+import Joi from "joi";
 
 export interface IDoctor extends IUser {
-  username: string;
-  dateOfBirth: Date;
-  yearOfExperience: number;
   department: mongoose.Types.ObjectId;
-  designation: string;
-  medicalLicenseNumber: string;
-  languageSpoken: string[];
-  bloodGroup: string;
-  gender: string;
-  bio: string;
-  aboutDoctor: string;
-  featuredOnWebsite: boolean;
-  
-  address: {
-    address1: string;
-    address2?: string;
-    city: string;
-    state: string;
-    country: string;
-    pincode: string;
-  };
-  
-  session: {
-    from: string;
-    to: string;
-  };
-  
-  appointmentSettings: {
-    appointmentType: string;
-    acceptBookingsInAdvance: number;
-    appointmentDuration: number;
-    consultationCharge: number;
-    maxBookingsPerSlot: number;
-    displayOnBookingPage: boolean;
-  };
-  
+  specialization: string;
+  qualification: string;
+  experience: number;
+  fee: number;
+  description?: string;
   schedule: {
     day: string;
-    from: string;
-    to: string;
-    isAvailable: boolean;
+    startTime: string;
+    endTime: string;
   }[];
-  
-  education: {
-    degree: string;
-    university: string;
-    from: number;
-    to: number;
-  }[];
-  
-  awards: {
-    name: string;
-    from: number;
-  }[];
-  
-  certifications: {
-    name: string;
-    from: number;
-  }[];
-  
-  status: "pending" | "approved" | "rejected" | "suspended";
-  rating: number;
-  totalReviews: number;
+  profileStatus: "incomplete" | "completed";
+  status: "pending" | "approved" | "rejected";
+  isActive: boolean;
 }
 
 const DoctorSchema: Schema = new Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
-  },
-  dateOfBirth: {
-    type: Date,
-    required: true
-  },
-  yearOfExperience: {
-    type: Number,
-    required: true,
-    min: 0
-  },
   department: {
     type: Schema.Types.ObjectId,
-    ref: 'Department',
-    required: true
+    ref: "Department",
   },
-  designation: {
+  specialization: {
     type: String,
-    required: true
+    trim: true,
   },
-  medicalLicenseNumber: {
+  qualification: {
     type: String,
-    required: true,
-    unique: true
+    trim: true,
   },
-  languageSpoken: [{
-    type: String
-  }],
-  bloodGroup: {
+  experience: {
+    type: Number,
+    min: 0,
+    default: 0,
+  },
+  fee: {
+    type: Number,
+    min: 0,
+  },
+  description: {
     type: String,
-    enum: Object.values(BloodGroup),
-    default: BloodGroup.UNKNOWN
   },
-  gender: {
-    type: String,
-    enum: Object.values(Gender),
-    required: true
-  },
-  bio: {
-    type: String
-  },
-  aboutDoctor: {
-    type: String
-  },
-  featuredOnWebsite: {
-    type: Boolean,
-    default: false
-  },
-  
-  address: {
-    address1: {
-      type: String,
-      required: true
+  schedule: [
+    {
+      day: {
+        type: String,
+        enum: [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday",
+        ],
+      },
+      startTime: {
+        type: String,
+      },
+      endTime: {
+        type: String,
+      },
     },
-    address2: {
-      type: String
-    },
-    city: {
-      type: String,
-      required: true
-    },
-    state: {
-      type: String,
-      required: true
-    },
-    country: {
-      type: String,
-      required: true
-    },
-    pincode: {
-      type: String,
-      required: true
-    }
-  },
-  
-  session: {
-    from: {
-      type: String,
-      required: true
-    },
-    to: {
-      type: String,
-      required: true
-    }
-  },
-  
-  appointmentSettings: {
-    appointmentType: {
-      type: String,
-      enum: ["inperson"],
-      default: "inperson"
-    },
-    acceptBookingsInAdvance: {
-      type: Number,
-      default: 7
-    },
-    appointmentDuration: {
-      type: Number,
-      default: 30
-    },
-    consultationCharge: {
-      type: Number,
-      required: true
-    },
-    maxBookingsPerSlot: {
-      type: Number,
-      default: 1
-    },
-    displayOnBookingPage: {
-      type: Boolean,
-      default: true
-    }
-  },
-  
-  schedule: [{
-    day: {
-      type: String,
-      enum: Object.values(DaysOfWeek),
-      required: true
-    },
-    from: {
-      type: String,
-      required: true
-    },
-    to: {
-      type: String,
-      required: true
-    },
-    isAvailable: {
-      type: Boolean,
-      default: true
-    }
-  }],
-  
-  education: [{
-    degree: {
-      type: String,
-      required: true
-    },
-    university: {
-      type: String,
-      required: true
-    },
-    from: {
-      type: Number,
-      required: true
-    },
-    to: {
-      type: Number,
-      required: true
-    }
-  }],
-  
-  awards: [{
-    name: {
-      type: String,
-      required: true
-    },
-    from: {
-      type: Number,
-      required: true
-    }
-  }],
-  
-  certifications: [{
-    name: {
-      type: String,
-      required: true
-    },
-    from: {
-      type: Number,
-      required: true
-    }
-  }],
-  
+  ],
   status: {
     type: String,
-    enum: ["pending", "approved", "rejected", "suspended"],
-    default: "pending"
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
   },
   rating: {
-    type: Number,
-    default: 0,
-    min: 0,
-    max: 5
+    type: String,
   },
-  totalReviews: {
-    type: Number,
-    default: 0
-  }
+  profileStatus: {
+    type: String,
+    enum: ["incomplete", "completed"],
+    default: "incomplete",
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+});
+DoctorSchema.index({
+  firstName: "text",
+  lastName: "text",
+  specialization: "text",
 });
 
-
-export const Doctor = User.discriminator<IDoctor>(UserRole.DOCTOR, DoctorSchema);
+export const validateUpdateDoctorProfile = Joi.object({
+  department: Joi.string().required().messages({
+    "string.empty": "القسم مطلوب",
+  }),
+  specialization: Joi.string().required().messages({
+    "string.empty": "التخصص مطلوب",
+  }),
+  qualification: Joi.string().required().messages({
+    "string.empty": "المؤهل مطلوب",
+  }),
+  experience: Joi.number().min(0).max(50).required().messages({
+    "number.base": "الخبرة يجب أن تكون رقم",
+    "number.min": "الخبرة يجب أن تكون 0 أو أكثر",
+  }),
+  fee: Joi.number().min(100).max(5000).required().messages({
+    "number.base": "سعر الكشف يجب أن يكون رقم",
+    "number.min": "أقل سعر للكشف 100 جنية",
+  }),
+  description: Joi.string().allow("").optional(),
+  schedule: Joi.array()
+    .items(
+      Joi.object({
+        day: Joi.string()
+          .valid(
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          )
+          .required(),
+        startTime: Joi.string().required(),
+        endTime: Joi.string().required(),
+      })
+    )
+    .min(1)
+    .required()
+    .messages({
+      "array.min": "يجب إضافة يوم عمل واحد على الأقل",
+    }),
+});
+export const Doctor = User.discriminator<IDoctor>(
+  UserRole.DOCTOR,
+  DoctorSchema
+);

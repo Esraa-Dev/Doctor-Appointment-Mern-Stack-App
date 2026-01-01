@@ -25,10 +25,6 @@ const DepartmentSchema: Schema = new Schema({
     type: Boolean,
     default: true,
   },
-  doctorsCount: {
-    type: Number,
-    default: 0,
-  }
 }, { 
   timestamps: true 
 });
