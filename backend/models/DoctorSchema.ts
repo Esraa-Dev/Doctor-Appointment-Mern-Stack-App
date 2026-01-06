@@ -15,6 +15,8 @@ export interface IDoctor extends IUser {
     startTime: string;
     endTime: string;
   }[];
+  rating: number;
+  totalReviews: number;
   profileStatus: "incomplete" | "completed";
   status: "pending" | "approved" | "rejected";
   isActive: boolean;
@@ -73,7 +75,14 @@ const DoctorSchema: Schema = new Schema({
     default: "pending",
   },
   rating: {
-    type: String,
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
+  totalReviews: {
+    type: Number,
+    default: 0,
   },
   profileStatus: {
     type: String,
@@ -85,6 +94,7 @@ const DoctorSchema: Schema = new Schema({
     default: true,
   },
 });
+
 DoctorSchema.index({
   firstName: "text",
   lastName: "text",
@@ -134,6 +144,7 @@ export const validateUpdateDoctorProfile = Joi.object({
       "array.min": "يجب إضافة يوم عمل واحد على الأقل",
     }),
 });
+
 export const Doctor = User.discriminator<IDoctor>(
   UserRole.DOCTOR,
   DoctorSchema

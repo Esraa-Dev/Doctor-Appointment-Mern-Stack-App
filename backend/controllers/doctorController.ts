@@ -9,14 +9,8 @@ export const getAllDoctors = AsyncHandler(
   async (req: Request, res: Response) => {
     const { search, department, fee, experience, schedule, sortBy } = req.query;
     console.log("search:", search);
-    console.log("department:", department);
-    console.log("fee:", fee);
-    console.log("experience:", experience);
-    console.log("schedule:", schedule);
-    console.log("sortBy:", sortBy);
-    console.log("========================");
     let filter: any = {
-      // status: "approved",
+      status: "approved",
       isActive: true,
       profileStatus: "completed",
     };
@@ -65,3 +59,42 @@ export const getAllDoctors = AsyncHandler(
   }
 );
 
+export const getTopDoctors = AsyncHandler(
+  async (req: Request, res: Response) => {
+    const { limit = 4 } = req.query;
+
+    try {
+      const topDoctors = await Doctor.find({
+        status: "approved",
+        isActive: true,
+        profileStatus: "completed",
+        rating: { $gte: 4 },
+      })
+        .populate("department", "name icon color")
+        .sort({ experience: -1 })
+        .limit(Number(limit));
+
+      res
+        .status(200)
+        .json(
+          new ApiResponse("Top doctors retrieved successfully", topDoctors, 200)
+        );
+    } catch (error) {
+      console.error("Error fetching top doctors:", error);
+
+      const topDoctors = await Doctor.find({
+        status: "approved",
+        isActive: true,
+        profileStatus: "completed",
+      })
+        .populate("department", "name icon color")
+        .limit(Number(limit));
+
+      res
+        .status(200)
+        .json(
+          new ApiResponse("Top doctors retrieved successfully", topDoctors, 200)
+        );
+    }
+  }
+);
