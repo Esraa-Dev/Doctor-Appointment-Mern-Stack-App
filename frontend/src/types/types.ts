@@ -247,3 +247,11 @@ export interface TextareaProps {
   rows?: number;
   className?: string;
 }
+export interface DoctorFilters {
+  search: string;
+  department: string | null;
+  fee: number | null;
+  experience: number | null;
+  schedule: string | null;
+  sortBy: string;
+}

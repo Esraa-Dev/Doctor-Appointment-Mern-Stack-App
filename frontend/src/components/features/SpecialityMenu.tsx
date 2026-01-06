@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { useGetDepartment } from "../../hooks/department/useGetDepartment";
 import type { Department } from "../../types/types";
 import Loading from "../ui/Loading";
 
 const SpecialityMenu = () => {
   const { data: departments, isLoading, isError } = useGetDepartment();
+  const navigate = useNavigate()
   if (isLoading) {
     return <Loading />;
   }
@@ -12,7 +14,6 @@ const SpecialityMenu = () => {
       <div className="text-center py-8 text-red-500">فشل في تحميل التخصصات</div>
     );
   }
-  console.log(departments);
   return (
     <section className="py-16 bg-white relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-32 translate-x-32"></div>
@@ -29,11 +30,12 @@ const SpecialityMenu = () => {
           <div className="w-20 h-1 bg-linear-to-r from-primary to-secondary rounded-full mx-auto"></div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {departments.map((item: Department) => (
             <div
               key={item._id}
               className="group relative bg-background border border-primaryBorder rounded-2xl p-6 hover:border-primary hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
+              onClick={() => navigate(`/doctor-list?department=${item._id}`)}
             >
               <div className="absolute -top-6 -left-6 w-12 h-12 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
               <div className="absolute -bottom-8 -right-8 w-16 h-16 bg-secondary/10 rounded-full group-hover:bg-secondary/20 transition-all duration-500"></div>
