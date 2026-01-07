@@ -10,7 +10,7 @@ import { verifyToken } from "../middlewares/verify.js";
 const router = express.Router();
 
 router.post(
-  "/create-department",
+  "/",
   verifyToken,
   upload.single("image"),
   createDepartment

@@ -9,7 +9,6 @@ import Loading from "../components/ui/Loading";
 const MyProfile = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const { data: profile, isLoading, error } = useGetProfile();
-  console.log(profile)
 
   if (isLoading) return <Loading />
   if (error) {

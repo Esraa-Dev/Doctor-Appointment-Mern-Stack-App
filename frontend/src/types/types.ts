@@ -255,3 +255,23 @@ export interface DoctorFilters {
   schedule: string | null;
   sortBy: string;
 }
+export interface DoctorOnboardingData {
+  department: string;
+  specialization: string;
+  qualification: string;
+  experience: number;
+  fee: number;
+  description?: string;
+  schedule: {
+    day:
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday";
+    startTime: string;
+    endTime: string;
+  }[];
+}

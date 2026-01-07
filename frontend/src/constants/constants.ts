@@ -21,3 +21,9 @@ export const APPOINTMENT_TYPES = [
   { id: "video", label: "فيديو", icon: Video },
   { id: "voice", label: "صوت", icon: Phone },
 ];
+
+export const APPOINTMENTS_TABS = [
+  { id: 'upcoming', label: 'القادمة' },
+  { id: 'completed', label: 'المكتملة' },
+  { id: 'cancelled', label: 'الملغية' },
+] as const;
