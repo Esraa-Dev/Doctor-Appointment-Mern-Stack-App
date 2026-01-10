@@ -20,4 +20,8 @@ export const doctorService = {
     const response = await api.get(`/doctors/${id}`);
     return response.data.data;
   },
+  updateDoctorProfile: async (data: any) => {
+    const response = await api.put("/doctors/profile", data);
+    return response.data;
+  },
 };

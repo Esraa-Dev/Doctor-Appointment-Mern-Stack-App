@@ -26,7 +26,7 @@ router.get(
   verifyPermission([UserRole.PATIENT]),
   getPatientAppointments
 );
-router.get("/booked-slots/:doctorId/slots/:date", verifyToken, getBookedSlots);
+router.get("/booked-slots/:doctorId/:date", verifyToken, getBookedSlots);
 router.patch(
   "/:id/status",
   verifyToken,

@@ -6,15 +6,15 @@ import { doctorOnboardingSchema } from "../../validations/doctorOnboardingSchema
 import { Button } from "../ui/Button";
 import { TextInput } from "../ui/TextInput";
 import { Textarea } from "../ui/Textarea";
-import { DAYS, STEPS } from "../../constants/onboarding";
 import { Select } from "../ui/Select";
+import { DAYS, STEPS } from "../../constants/onboarding";
 import { useGetDepartment } from "../../hooks/department/useGetDepartment";
 import type { DoctorOnboardingData } from "../../types/types";
-import { useUpdateProfile } from "../../hooks/patient/useUpdateProfile";
+import { useUpdateDoctorProfile } from "../../hooks/doctor/useUpdateDoctorProfile";
 
 export const DoctorOnboardingForm = () => {
   const { data: departmentsData } = useGetDepartment();
-  const { mutate, isPending } = useUpdateProfile();
+  const { mutate, isPending } = useUpdateDoctorProfile();
   const [step, setStep] = useState(1);
 
   const {
