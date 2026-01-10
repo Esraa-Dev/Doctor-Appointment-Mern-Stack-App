@@ -250,7 +250,7 @@ export interface Appointment {
   startTime: string;
   endTime: string;
   type: "clinic" | "video" | "voice";
-  status: "Scheduled" | "Completed" | "Cancelled" | "In Progress";
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled"; // Make sure these match your actual values
   fee: number;
   paymentStatus: "pending" | "paid" | "refunded";
   symptoms?: string;
@@ -314,52 +314,17 @@ export interface DoctorOnboardingData {
     endTime: string;
   }[];
 }
-
-export interface Notification {
-  id: string;
-  type: "call" | "message" | "appointment" | "system";
-  title: string;
-  message: string;
-  appointmentId?: string;
-  userId?: string;
-  read: boolean;
-  timestamp: Date;
-  metadata?: Record<string, any>;
+export interface SelectProps {
+  label: string;
+  register: UseFormRegisterReturn;
+  error?: FieldError;
+  children: React.ReactNode;
+  id?: string;
+  requiredSelect?: boolean;
+  disabled?: boolean;
+  className?: string;
 }
 
-export interface CallData {
-  roomId: string;
-  appointmentId: string;
-  callerId: string;
-  callerName: string;
-  callerImage?: string;
-  type: "video" | "voice";
-}
-
-export interface Message {
-  _id: string;
-  appointmentId: string;
-  senderId:
-    | string
-    | {
-        _id: string;
-        firstName: string;
-        lastName: string;
-        image?: string;
-        role: string;
-      };
-  receiverId: string;
-  content: string;
-  messageType: "text" | "image" | "file" | "audio";
-  read: boolean;
-  readAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface VideoCallData {
-  roomId: string;
-  userType: "doctor" | "patient";
-  userName: string;
-  appointmentId?: string;
+export interface AppointmentCardProps {
+  appointment: Appointment;
 }
