@@ -1,48 +1,80 @@
-import mongoose, { Schema, Document, Types } from "mongoose";
 import Joi from "joi";
+import mongoose, { Schema, Document } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 export interface IAppointment extends Document {
-  patientId: Types.ObjectId;
-  doctorId: Types.ObjectId;
+  patientId: mongoose.Types.ObjectId;
+  doctorId: mongoose.Types.ObjectId;
   appointmentDate: Date;
   startTime: string;
   endTime: string;
-  type: "clinic" | "video" | "voice";
-  status: "Scheduled" | "Completed" | "Cancelled" | "In Progress";
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
+  type: "video" | "voice" | "clinic";
   fee: number;
-  paymentStatus: "pending" | "paid" | "refunded";
-  paymentId?: string;
   symptoms?: string;
   roomId: string;
+  callStatus: "idle" | "ringing" | "connected" | "ended";
+  callStartedAt?: Date;
+  callEndedAt?: Date;
 }
 
-const appointmentSchema = new Schema<IAppointment>(
+const AppointmentSchema: Schema = new Schema(
   {
-    patientId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    doctorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    appointmentDate: { type: Date, required: true },
-    startTime: { type: String, required: true },
-    endTime: { type: String, required: true },
-    type: {
-      type: String,
-      enum: ["clinic", "video", "voice"],
+    patientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
-      default: "clinic",
+    },
+    doctorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    appointmentDate: {
+      type: Date,
+      required: true,
+    },
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
     },
     status: {
       type: String,
-      enum: ["Scheduled", "Completed", "Cancelled", "In Progress"],
+      enum: ["Scheduled", "In Progress", "Completed", "Cancelled"],
       default: "Scheduled",
     },
-    fee: { type: Number, required: true },
-    paymentStatus: {
+    type: {
       type: String,
-      enum: ["pending", "paid", "refunded"],
-      default: "pending",
+      enum: ["video", "voice", "clinic"],
+      required: true,
     },
-    roomId: { type: String, unique: true, sparse: true },
-    symptoms: { type: String, default: "" },
-    paymentId: { type: String },
+    fee: {
+      type: Number,
+      required: true,
+    },
+    symptoms: {
+      type: String,
+    },
+    roomId: {
+      type: String,
+      default: () => uuidv4(),
+      unique: true,
+    },
+    callStatus: {
+      type: String,
+      enum: ["idle", "ringing", "connected", "ended"],
+      default: "idle",
+    },
+    callStartedAt: {
+      type: Date,
+    },
+    callEndedAt: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
@@ -99,7 +131,14 @@ export const validateUpdateAppointmentStatus = Joi.object({
     }),
 });
 
+export const validateStartConsultation = Joi.object({
+  type: Joi.string().valid("video", "voice").required().messages({
+    "any.only": "Consultation type must be video or voice",
+    "any.required": "Consultation type is required",
+  }),
+});
+
 export const Appointment = mongoose.model<IAppointment>(
   "Appointment",
-  appointmentSchema
+  AppointmentSchema
 );

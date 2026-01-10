@@ -4,9 +4,8 @@ import {
   getBookedSlots,
   getDoctorAppointments,
   getPatientAppointments,
-  joinVideoConsultation,
-  startVideoConsultation,
   updateAppointmentStatus,
+  startConsultation,
 } from "../controllers/appointmentController.js";
 import { verifyToken, verifyPermission } from "../middlewares/verify.js";
 import { UserRole } from "../constants.js";
@@ -35,18 +34,13 @@ router.patch(
   validateObjectId("id"),
   updateAppointmentStatus
 );
+
 router.post(
-  "/:id/start-video",
+  "/:id/start-call",
   verifyToken,
   verifyPermission([UserRole.DOCTOR]),
   validateObjectId("id"),
-  startVideoConsultation
-);
-router.post(
-  "/:id/join-video",
-  verifyToken,
-  validateObjectId("id"),
-  joinVideoConsultation
+  startConsultation
 );
 
 export default router;

@@ -1,18 +1,16 @@
-
 import { Request, Response } from "express";
 import {
   Appointment,
   validateBookAppointment,
   validateBookedSlots,
+  validateStartConsultation,
   validateUpdateAppointmentStatus,
 } from "../models/AppointmentSchema.js";
 import { AsyncHandler } from "../utils/AsyncHandler.js";
 import { Doctor } from "../models/DoctorSchema.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import mongoose from "mongoose";
-import { AgoraService } from "../services/agoraService.js";
-import { ZegoService } from "../services/ZegoService.js";
+import { generateToken04 } from "../utils/ZegoToken.js";
 
 export const getPatientAppointments = AsyncHandler(
   async (req: Request, res: Response) => {
@@ -78,12 +76,6 @@ export const bookAppointment = AsyncHandler(
     if (existingAppointment) {
       throw new ApiError("Time slot already booked for this doctor", 400);
     }
-
-    let roomId;
-    if (type === "video") {
-      roomId = `appointment_${new mongoose.Types.ObjectId()}_${Date.now()}`;
-    }
-
     const newAppointment = new Appointment({
       patientId,
       doctorId,
@@ -93,16 +85,19 @@ export const bookAppointment = AsyncHandler(
       type,
       fee,
       symptoms,
-      roomId,
       status: "Scheduled",
       paymentStatus: "pending",
     });
 
+    if (type === "video" || type === "voice") {
+      newAppointment.roomId = `room_${newAppointment._id}`;
+    }
+
     await newAppointment.save();
 
     const fullDetails = await Appointment.findById(newAppointment._id)
-      .populate("doctorId", "name specialization profileImage")
-      .populate("patientId", "name email profileImage");
+      .populate("doctorId", "firstName lastName specialization image")
+      .populate("patientId", "firstName lastName email image");
 
     res
       .status(201)
@@ -208,11 +203,6 @@ export const updateAppointmentStatus = AsyncHandler(
     }
 
     appointment.status = status;
-
-    if (status === "Completed" && appointment.paymentStatus === "pending") {
-      appointment.paymentStatus = "paid";
-    }
-
     await appointment.save();
 
     const updatedAppointment = await Appointment.findById(id)
@@ -231,138 +221,86 @@ export const updateAppointmentStatus = AsyncHandler(
   }
 );
 
-export const startVideoConsultation = AsyncHandler(
+export const startConsultation = AsyncHandler(
   async (req: Request, res: Response) => {
+    const { error, value } = validateStartConsultation.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      const messages = error.details.map((err) =>
+        err.message.replace(/["]/g, "")
+      );
+      throw new ApiError("Validation failed", 400, messages);
+    }
+
     const { id } = req.params;
-    const doctorId = req.user?._id;
+    const { type } = value;
+    const userId = req.user?._id;
 
     const appointment = await Appointment.findById(id)
-      .populate('doctorId', 'firstName lastName email')
-      .populate('patientId', 'firstName lastName email');
-    
-    if (!appointment) {
-      throw new ApiError("Appointment not found", 404);
+      .populate("doctorId", "firstName lastName email image _id")
+      .populate("patientId", "firstName lastName email image _id");
+
+    if (!appointment) throw new ApiError("Appointment not found", 404);
+
+    if (appointment.type === "clinic") {
+      throw new ApiError(
+        "Clinic appointments do not support starting a call",
+        400
+      );
     }
 
-    // Check if doctor is authorized
-    if (appointment.doctorId._id.toString() !== doctorId?.toString()) {
-      throw new ApiError("Unauthorized to start this consultation", 403);
+    if (appointment.type !== type) {
+      throw new ApiError(`This appointment is not a ${type} consultation`, 400);
     }
 
-    // OPTIONAL: Add time validation back if needed
-    // const today = new Date();
-    // const appointmentDate = new Date(appointment.appointmentDate);
-    // if (appointmentDate.toDateString() !== today.toDateString()) {
-    //   throw new ApiError("Can only start consultations scheduled for today", 400);
-    // }
+    const isDoctor = appointment.doctorId._id.toString() === userId?.toString();
+    const isPatient =
+      appointment.patientId._id.toString() === userId?.toString();
+    if (!isDoctor && !isPatient) throw new ApiError("Unauthorized", 403);
 
-    // Update appointment status
-    appointment.status = "In Progress";
-    
-    // Generate room ID if not exists
-    if (!appointment.roomId) {
+    if (!["Scheduled", "In Progress"].includes(appointment.status)) {
+      throw new ApiError(
+        `Cannot start consultation for ${appointment.status}`,
+        400
+      );
+    }
+
+    const appId = Number(process.env.ZEGO_APP_ID);
+    const serverSecret = process.env.ZEGO_SERVER_SECRET as string;
+    if (!appId || isNaN(appId) || !serverSecret)
+      throw new ApiError("Call service config error", 500);
+
+    const token = generateToken04(
+      appId,
+      userId.toString(),
+      serverSecret,
+      3600,
+      ""
+    );
+
+    if (appointment.status === "Scheduled") appointment.status = "In Progress";
+    appointment.callStatus = "ringing";
+    appointment.callStartedAt = new Date();
+    if (!appointment.roomId)
       appointment.roomId = `room_${appointment._id}_${Date.now()}`;
-    }
-    
-    await appointment.save();
 
-    // Generate Zego token for doctor
-    const doctorUserId = `doctor_${doctorId}`;
-    const zegoToken = ZegoService.generateToken(doctorUserId, appointment.roomId);
+    await appointment.save();
 
     res.status(200).json(
       new ApiResponse(
-        "Video consultation started successfully",
+        `${
+          type === "video" ? "Video" : "Voice"
+        } consultation started successfully`,
         {
-          appointmentId: appointment._id,
           roomId: appointment.roomId,
-          zego: {
-            appId: zegoToken.appId,
-            token: zegoToken.token,
-            roomId: zegoToken.roomId,
-            userId: zegoToken.userId,
-            userName: `${appointment.doctorId.firstName} ${appointment.doctorId.lastName}`
-          },
-          userType: 'doctor',
-          appointmentDetails: {
-            doctorName: `${appointment.doctorId.firstName} ${appointment.doctorId.lastName}`,
-            patientName: `${appointment.patientId.firstName} ${appointment.patientId.lastName}`,
-            appointmentDate: appointment.appointmentDate,
-            startTime: appointment.startTime,
-            endTime: appointment.endTime
-          }
+          token,
+          patientId: appointment.patientId,
+          doctorId: appointment.doctorId,
+          type: appointment.type,
         },
         200
       )
     );
   }
 );
-export const joinVideoConsultation = AsyncHandler(async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    if (!req.user || !req.user._id) {
-      throw new ApiError("User not authenticated", 401);
-    }
-    
-    const appointment = await Appointment.findById(id)
-      .populate('doctorId', 'firstName lastName email')
-      .populate('patientId', 'firstName lastName email');
-    
-    if (!appointment) {
-      throw new ApiError("Appointment not found", 404);
-    }
-    
-    const isDoctor = appointment.doctorId && 
-                     appointment.doctorId._id.toString() === req.user._id.toString();
-    const isPatient = appointment.patientId && 
-                      appointment.patientId._id.toString() === req.user._id.toString();
-    
-    if (!isDoctor && !isPatient) {
-      throw new ApiError("Not authorized to join this consultation", 403);
-    }
-    
-    if (appointment.status !== "In Progress") {
-      throw new ApiError("Consultation has not started yet", 400);
-    }
-    
-    if (appointment.type !== "video") {
-      throw new ApiError("This appointment is not a video consultation", 400);
-    }
-    
-    if (!appointment.roomId) {
-      throw new ApiError("Video room not available", 400);
-    }
-    
-    // Generate Zego token based on user
-    const userId = isDoctor ? 'doctor_' + req.user._id : 'patient_' + req.user._id;
-    const zegoToken = ZegoService.generateToken(userId, appointment.roomId);
-   // In joinVideoConsultation function, update the response:
-res.status(200).json(
-  new ApiResponse("Joining video consultation", {
-    appointmentId: appointment._id,
-    roomId: appointment.roomId,
-    zego: {
-      appId: zegoToken.appId,
-      token: zegoToken.token,
-      roomId: zegoToken.roomId,
-      userId: zegoToken.userId,
-      userName: isDoctor 
-        ? `${appointment.doctorId.firstName} ${appointment.doctorId.lastName}`
-        : `${appointment.patientId.firstName} ${appointment.patientId.lastName}`
-    },
-    userType: isDoctor ? 'doctor' : 'patient',
-    appointmentDetails: {
-      doctorName: `${appointment.doctorId.firstName} ${appointment.doctorId.lastName}`,
-      patientName: `${appointment.patientId.firstName} ${appointment.patientId.lastName}`,
-      appointmentDate: appointment.appointmentDate,
-      startTime: appointment.startTime,
-      endTime: appointment.endTime
-    }
-  }, 200)
-);
-  } catch (error) {
-    console.error("Error in joinVideoConsultation:", error);
-    throw error;
-  }
-});
