@@ -1,4 +1,6 @@
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import { connectDb } from "./config/db.js";
 import { swaggerSpec, swaggerUi } from "./config/swagger.js";
 import cookieParser from "cookie-parser";
@@ -7,29 +9,62 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { connectCloudinary } from "./config/cloudinary.js";
 import morgan from "morgan";
+import helmet from "helmet";
 
 import authRouter from "./routes/auth.js";
 import doctorRouter from "./routes/doctor.js";
 import appointmentRouter from "./routes/appointment.js";
 import departmentRouter from "./routes/department.js";
 import patientRouter from "./routes/patient.js";
-import helmet from "helmet";
 
 dotenv.config();
 connectDb();
 connectCloudinary();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: [process.env.FRONTEND_URL || "http://localhost:5173"],
+    credentials: true,
+  },
+});
+let onlineUsers = new Map();
+io.on("connection", (socket) => {
+  socket.on("identify", (userId) => {
+    onlineUsers.set(userId, socket.id);
+    io.emit("get-online-users", Array.from(onlineUsers.keys()));
+  });
+
+  socket.on("start-call", (data) => {
+    const patientSocketId = onlineUsers.get(data.patientId);
+    io.to(patientSocketId).emit("incoming-call", {
+      roomId: data.roomId,
+      doctorName: data.doctorName,
+      type: data.type,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    for (let [userId, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        break;
+      }
+    }
+    io.emit("get-online-users", Array.from(onlineUsers.keys()));
+  });
+});
 
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173"],
+    origin: [process.env.FRONTEND_URL || "http://localhost:5173"],
     credentials: true,
   })
 );
+
 app.use("/uploads", express.static("uploads"));
 app.use(cookieParser());
 app.use(helmet());
@@ -43,7 +78,7 @@ app.use("/api/v1/doctors", doctorRouter);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`📚 Swagger Docs: http://localhost:${PORT}/api-docs`);
 });
