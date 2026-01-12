@@ -14,7 +14,7 @@ export const appointmentService = {
 
   getBookedSlots: async (params: { doctorId: string; date: string }) => {
     const response = await api.get(
-      `/appointments/booked-slots/${params.doctorId}/${params.date}`
+      `/appointments/booked-slots/${params.doctorId}/slots/${params.date}`
     );
     return response.data.data;
   },
@@ -44,5 +44,9 @@ export const appointmentService = {
     }
     const response = await api.get("/appointments/patient", { params });
     return response.data.data;
+  },
+  startConsultation: async ({ id, type }: { id: string; type: string }) => {
+    const response = await api.post(`/appointments/${id}/start-call`, { type });
+    return response.data;
   },
 };
