@@ -2,13 +2,27 @@ import { Calendar } from "lucide-react";
 import { DoctorAppointmentCard } from "../components/features/dashboard/DoctorAppointmentCard";
 import { useGetDoctorAppointments } from "../hooks/appointment/useGetDoctorAppointments";
 import type { Appointment } from "../types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APPOINTMENTS_TABS } from "../constants/constants";
+import { useSocket } from "../context/SocketContext";
 
 const DoctorAppointments = () => {
   const [activeTab, setActiveTab] = useState<"upcoming" | "completed" | "cancelled">("upcoming");
   const { data: appointments = [], isLoading } = useGetDoctorAppointments();
+  const socket = useSocket();
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("get-online-users", (users: string[]) => {
+      console.log(users)
+      setOnlineUsers(users);
+    });
+
+    return () => {
+      socket.off("get-online-users");
+    };
+  }, [socket]);
   const filteredAppointments = appointments.filter((appointment: Appointment) => {
     if (activeTab === "upcoming") {
       return appointment.status === "Scheduled" || appointment.status === "In Progress";
@@ -63,11 +77,10 @@ const DoctorAppointments = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as "upcoming" | "completed" | "cancelled")}
-              className={`flex-1 py-4 text-center font-medium border-b-2 transition-colors ${
-                activeTab === tab.id
-                  ? "border-primary text-primary"
-                  : "border-transparent text-primaryText hover:text-primary"
-              }`}
+              className={`flex-1 py-4 text-center font-medium border-b-2 transition-colors ${activeTab === tab.id
+                ? "border-primary text-primary"
+                : "border-transparent text-primaryText hover:text-primary"
+                }`}
             >
               {tab.label}
               <span className="mr-2 text-sm bg-primary/10 px-2 py-1 rounded-full">
@@ -89,7 +102,7 @@ const DoctorAppointments = () => {
             </div>
           ) : (
             filteredAppointments.map((appointment: Appointment) => (
-              <DoctorAppointmentCard key={appointment._id} appointment={appointment} />
+              <DoctorAppointmentCard key={appointment._id} appointment={appointment} isOnline={onlineUsers.includes(appointment.patientId?._id)} />
             ))
           )}
         </div>
