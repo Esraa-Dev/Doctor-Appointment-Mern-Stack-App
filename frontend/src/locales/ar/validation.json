@@ -1,0 +1,23 @@
+{
+  "required": "هذا الحقل مطلوب",
+  "invalidEmail": "صيغة البريد الإلكتروني غير صالحة",
+  "invalidPhone": "رقم الهاتف غير صالح",
+  "minLength": "يجب أن يكون على الأقل {{count}} أحرف",
+  "passwordMismatch": "كلمات المرور غير متطابقة",
+  "invalidOTP": "صيغة رمز التحقق غير صالحة",
+  "otpRequired": "رمز التحقق مطلوب",
+  "otpLength": "يجب أن يتكون رمز التحقق من {{count}} أرقام",
+  "otpNumbersOnly": "يجب أن يحتوي رمز التحقق على أرقام فقط",
+  "firstNameRequired": "الاسم الأول مطلوب",
+  "lastNameRequired": "اسم العائلة مطلوب",
+  "experienceMin": "الخبرة يجب أن تكون 0 أو أكثر",
+  "experienceMax": "الخبرة لا يمكن أن تتجاوز 50 سنة",
+  "experienceInteger": "يجب أن تكون الخبرة عدد صحيح",
+  "feeMin": "أقل سعر للكشف 100 جنية",
+  "dayRequired": "اليوم مطلوب",
+  "startTimeRequired": "وقت البدء مطلوب",
+  "endTimeRequired": "وقت الانتهاء مطلوب",
+  "atLeastOneDay": "يجب إضافة يوم عمل واحد على الأقل",
+  "fileTooLarge": "يجب أن يكون الملف أقل من 2 ميجابايت",
+  "invalidFileType": "يسمح فقط بصور JPG أو PNG"
+}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import i18n from "../i18n";
 
 const days = [
   "monday",
@@ -11,23 +12,28 @@ const days = [
 ] as const;
 
 const scheduleSchema = z.object({
-  day: z
-    .enum(days)
-    .refine((val) => days.includes(val), { message: "اليوم مطلوب" }),
-  startTime: z.string().min(1, "وقت البدء مطلوب"),
-  endTime: z.string().min(1, "وقت الانتهاء مطلوب"),
+  day: z.enum(days).refine((val) => days.includes(val), {
+    message: i18n.t("validation:dayRequired"),
+  }),
+  startTime: z.string().min(1, i18n.t("validation:startTimeRequired")),
+  endTime: z.string().min(1, i18n.t("validation:endTimeRequired")),
 });
 
 export const doctorOnboardingSchema = z.object({
-  department: z.string().min(1, "القسم مطلوب"),
-  specialization: z.string().min(1, "التخصص مطلوب"),
-  qualification: z.string().min(1, "المؤهل مطلوب"),
+  department: z.string().min(1, i18n.t("validation:required")),
+  specialization_en: z.string().min(1, i18n.t("validation:required")),
+  specialization_ar: z.string().min(1, i18n.t("validation:required")),
+  qualification_en: z.string().min(1, i18n.t("validation:required")),
+  qualification_ar: z.string().min(1, i18n.t("validation:required")),
   experience: z
     .number()
-    .min(0, "الخبرة يجب أن تكون 0 أو أكثر")
-    .max(50, "الخبرة لا يمكن أن تتجاوز 50 سنة")
-    .int("يجب أن تكون الخبرة عدد صحيح"),
-  fee: z.number().min(100, "أقل سعر للكشف 100 جنية"),
-  description: z.string().optional(),
-  schedule: z.array(scheduleSchema).min(1, "يجب إضافة يوم عمل واحد على الأقل"),
+    .min(0, i18n.t("validation:experienceMin"))
+    .max(50, i18n.t("validation:experienceMax"))
+    .int(i18n.t("validation:experienceInteger")),
+  fee: z.number().min(100, i18n.t("validation:feeMin")),
+  description_en: z.string().optional(),
+  description_ar: z.string().optional(),
+  schedule: z.array(scheduleSchema).min(1, i18n.t("validation:atLeastOneDay")),
 });
+
+export type DoctorOnboardingData = z.infer<typeof doctorOnboardingSchema>;

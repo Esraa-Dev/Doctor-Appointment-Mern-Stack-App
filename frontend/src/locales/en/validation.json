@@ -1,0 +1,23 @@
+{
+  "required": "This field is required",
+  "invalidEmail": "Invalid email format",
+  "invalidPhone": "Invalid phone number",
+  "minLength": "Must be at least {{count}} characters",
+  "passwordMismatch": "Passwords do not match",
+  "invalidOTP": "Invalid OTP format",
+  "otpRequired": "OTP is required",
+  "otpLength": "OTP must be {{count}} digits",
+  "otpNumbersOnly": "OTP must contain numbers only",
+  "firstNameRequired": "First name is required",
+  "lastNameRequired": "Last name is required",
+  "experienceMin": "Experience must be 0 or more",
+  "experienceMax": "Experience cannot exceed 50 years",
+  "experienceInteger": "Experience must be a whole number",
+  "feeMin": "Minimum consultation fee is 100 EGP",
+  "dayRequired": "Day is required",
+  "startTimeRequired": "Start time is required",
+  "endTimeRequired": "End time is required",
+  "atLeastOneDay": "Must add at least one work day",
+  "fileTooLarge": "File must be less than 2MB",
+  "invalidFileType": "Only JPG or PNG images allowed"
+}

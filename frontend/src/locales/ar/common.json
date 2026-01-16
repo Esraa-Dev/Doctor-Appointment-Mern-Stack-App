@@ -1,0 +1,20 @@
+{
+  "success": "تم بنجاح",
+  "error": "خطأ",
+  "notFound": "غير موجود",
+  "unauthorized": "غير مصرح",
+  "validationFailed": "فشل التحقق",
+  "serverError": "خطأ في الخادم",
+  "created": "تم الإنشاء بنجاح",
+  "updated": "تم التحديث بنجاح",
+  "deleted": "تم الحذف بنجاح",
+  "retrieved": "تم الاسترجاع بنجاح",
+  "userNotFound": "المستخدم غير موجود",
+  "doctorNotFound": "الطبيب غير موجود",
+  "appointmentNotFound": "الموعد غير موجود",
+  "departmentNotFound": "القسم غير موجود",
+  "defaultError": "حدث خطأ ما",
+  "profile": "الملف الشخصي",
+  "logout": "تسجيل الخروج",
+  "appointment": "موعد"
+}

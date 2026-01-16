@@ -23,7 +23,10 @@ export interface ProtectedRouteProps {
 
 export interface MobileNavbarProps {
   isOpen: boolean;
-  setIsMenuOpen: (value: boolean) => void;
+  setIsMenuOpen: (isOpen: boolean) => void;
+  user: any;
+  isLoading: boolean;
+  onLogout: () => void;
 }
 
 export interface ProfileHeaderProps {
@@ -52,11 +55,16 @@ export interface InfoItemProps {
 }
 
 export interface PatientAddress {
-  address1: string;
-  address2?: string;
-  city: string;
-  state: string;
-  country: string;
+  address1_en: string;
+  address1_ar: string;
+  address2_en?: string;
+  address2_ar?: string;
+  city_en: string;
+  city_ar: string;
+  state_en: string;
+  state_ar: string;
+  country_en: string;
+  country_ar: string;
   pincode: string;
 }
 
@@ -74,6 +82,7 @@ export interface EmergencyContact {
 }
 
 export interface PatientProfile {
+  _id: string;
   id: string;
   firstName: string;
   lastName: string;
@@ -95,11 +104,13 @@ export interface PatientProfile {
     | "";
   address: PatientAddress;
   emergencyContact?: EmergencyContact;
-  medicalHistory: string;
+  medicalHistory_en: string;
+  medicalHistory_ar: string;
   allergies: string[];
   status: "active" | "inactive";
   createdAt: string;
   updatedAt: string;
+  profileStatus?: string;
 }
 
 export interface PatientPersonalInfoProps {
@@ -121,13 +132,15 @@ export interface ButtonProps {
 
 export interface Department {
   _id: string;
-  name: string;
-  description?: string;
+  name_en: string;
+  name_ar: string;
+  description_en?: string;
+  description_ar?: string;
   icon?: string;
   isActive: boolean;
-  doctorsCount: number;
-  createdAt: string;
-  updatedAt: string;
+  doctorsCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Doctor {
@@ -143,73 +156,52 @@ export interface Doctor {
   verifyOtp?: string;
   verifyOtpExpireAt?: string | Date;
   isActive: boolean;
-  languageSpoken?: string[];
-  bloodGroup?: string;
-  featuredOnWebsite?: boolean;
-  status: "pending" | "approved" | "rejected" | "suspended";
-  rating: number;
-  totalReviews: number;
-  dateOfBirth?: string | Date;
-  yearOfExperience?: number;
-  specialization?: string;
-  qualification?: string;
+  profileStatus: string;
+  department?: Department | string;
+  specialization_en: string;
+  specialization_ar: string;
+  qualification_en: string;
+  qualification_ar: string;
   experience: number;
   fee: number;
-  department?: {
-    _id: string;
-    name: string;
-  };
-  designation?: string;
-  bio?: string;
-  aboutDoctor?: string;
+  description_en?: string;
+  description_ar?: string;
+  schedule: {
+    day: string;
+    startTime: string;
+    endTime: string;
+  }[];
+  rating: number;
+  totalReviews: number;
+  status: "pending" | "approved" | "rejected";
+  dateOfBirth?: string | Date;
+  bloodGroup?: string;
+  specialization?: string;
+  qualification?: string;
+  description?: string;
   address?: {
-    address1?: string;
-    address2?: string;
-    city?: string;
-    state?: string;
-    country?: string;
+    address1_en?: string;
+    address1_ar?: string;
+    address2_en?: string;
+    address2_ar?: string;
+    city_en?: string;
+    city_ar?: string;
+    state_en?: string;
+    state_ar?: string;
+    country_en?: string;
+    country_ar?: string;
     pincode?: string;
   };
-  session?: {
-    from?: string;
-    to?: string;
-  };
-  appointmentSettings?: {
-    appointmentType?: string;
-    acceptBookingsInAdvance?: number;
-    appointmentDuration?: number;
-    consultationCharge?: number;
-    maxBookingsPerSlot?: number;
-    displayOnBookingPage?: boolean;
-  };
-  schedule?: {
-    day?: string;
-    from?: string;
-    to?: string;
-    isAvailable?: boolean;
-  }[];
-  education?: {
-    degree?: string;
-    university?: string;
-    from?: number;
-    to?: number;
-  }[];
-  awards?: {
-    name?: string;
-    from?: number;
-  }[];
-  certifications?: {
-    name?: string;
-    from?: number;
-  }[];
-  createdAt: string | Date;
-  updatedAt: string | Date;
+
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 }
 
 export interface BookedSlotsParams {
   doctorId: string;
   date: string;
 }
+
 export interface BookAppointmentParams {
   doctorId: string;
   data: {
@@ -218,7 +210,8 @@ export interface BookAppointmentParams {
     endTime: string;
     type: "clinic" | "video" | "voice";
     fee: number;
-    symptoms?: string;
+    symptoms_en?: string;
+    symptoms_ar?: string;
   };
 }
 
@@ -242,34 +235,25 @@ export interface Appointment {
     email?: string;
     phone: string;
     image?: string;
-    specialization: string;
+    specialization_en: string;
+    specialization_ar: string;
     fee: number;
-    clinicAddress?: string;
+    specialization?: string;
   };
   appointmentDate: string;
   startTime: string;
   endTime: string;
   type: "clinic" | "video" | "voice";
-  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled"; // Make sure these match your actual values
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
   fee: number;
-  paymentStatus: "pending" | "paid" | "refunded";
+  symptoms_en?: string;
+  symptoms_ar?: string;
   symptoms?: string;
   roomId?: string;
-  callStatus?: "idle" | "ringing" | "ongoing" | "ended" | "missed";
+  callStatus?: "idle" | "ringing" | "connected" | "ended";
   callStartedAt?: Date;
   callEndedAt?: Date;
   callDuration?: number;
-  chatEnabled?: boolean;
-  lastMessageAt?: Date;
-  unreadCount?: {
-    patient: number;
-    doctor: number;
-  };
-  metadata?: {
-    recordingUrl?: string;
-    callQuality?: number;
-    notes?: string;
-  };
   createdAt: string | Date;
   updatedAt: string | Date;
 }
@@ -296,11 +280,14 @@ export interface DoctorFilters {
 
 export interface DoctorOnboardingData {
   department: string;
-  specialization: string;
-  qualification: string;
+  specialization_en: string;
+  specialization_ar: string;
+  qualification_en: string;
+  qualification_ar: string;
   experience: number;
   fee: number;
-  description?: string;
+  description_en?: string;
+  description_ar?: string;
   schedule: {
     day:
       | "monday"
@@ -314,6 +301,7 @@ export interface DoctorOnboardingData {
     endTime: string;
   }[];
 }
+
 export interface SelectProps {
   label: string;
   register: UseFormRegisterReturn;
@@ -327,4 +315,123 @@ export interface SelectProps {
 
 export interface AppointmentCardProps {
   appointment: Appointment;
+}
+
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: "patient" | "doctor" | "admin";
+  image?: string;
+  isEmailVerified: boolean;
+  profileStatus?: string;
+  createdAt?: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  accessToken: string;
+  refreshToken?: string;
+}
+
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phone: string;
+  role: "patient" | "doctor";
+}
+
+export interface ForgotPasswordFormData {
+  email: string;
+}
+
+export interface ResetPasswordFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface VerifyOtpFormData {
+  email?: string;
+  verifyOtp: string;
+}
+
+export interface ResetOtpFormData {
+  email: string;
+  resetPasswordOtp: string;
+}
+
+export interface PatientProfileFormData {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  dateOfBirth?: string;
+  gender?: "male" | "female" | "other" | "prefer-not-to-say";
+  bloodGroup?:
+    | "A+"
+    | "A-"
+    | "B+"
+    | "B-"
+    | "AB+"
+    | "AB-"
+    | "O+"
+    | "O-"
+    | "Unknown";
+  address?: {
+    address1_en?: string;
+    address1_ar?: string;
+    address2_en?: string;
+    address2_ar?: string;
+    city_en?: string;
+    city_ar?: string;
+    state_en?: string;
+    state_ar?: string;
+    country_en?: string;
+    country_ar?: string;
+    pincode?: string;
+  };
+  emergencyContact?: {
+    name?: string;
+    phone?: string;
+    relationship?:
+      | "spouse"
+      | "parent"
+      | "child"
+      | "sibling"
+      | "friend"
+      | "other";
+  };
+  medicalHistory_en?: string;
+  medicalHistory_ar?: string;
+  allergies?: string | string[];
+}
+
+export interface ContactMethod {
+  id: string;
+  icon: LucideIcon;
+  titleKey: string;
+  details: string;
+  descKey: string;
+}
+
+export interface ContactInfoItem {
+  icon: LucideIcon;
+  textKey: string;
+  details?: string;
+  detailsKey?: string;
+}
+
+export interface NavLink {
+  href: string;
+  labelKey: string;
+  translationKey: string;
 }

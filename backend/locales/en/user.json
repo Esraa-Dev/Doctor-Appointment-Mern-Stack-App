@@ -1,0 +1,20 @@
+{
+  "userRegistered": "User registered successfully and verification email has been sent",
+  "emailVerified": "Email verified successfully",
+  "loginSuccess": "User logged in successfully",
+  "otpSent": "OTP sent to your email",
+  "otpVerified": "OTP verified. You can now reset your password",
+  "passwordResetSuccess": "Password reset successfully",
+  "logoutSuccess": "User logged out",
+  "userRetrieved": "User retrieved successfully",
+  "tokenRefreshed": "Token refreshed successfully",
+  "otpResentSuccess": "OTP resent successfully",
+  "invalidCredentials": "Invalid credentials",
+  "emailNotVerified": "Email not verified. Please verify your email first",
+  "userNotFound": "User not found",
+  "invalidToken": "Invalid token",
+  "userExists": "User already exists",
+  "otpInvalidOrExpired": "Invalid or expired verification code",
+  "emailAlreadyVerified": "Email is already verified",
+  "invalidOtpType": "Invalid OTP type"
+}

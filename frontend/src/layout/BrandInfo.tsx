@@ -1,13 +1,15 @@
 import { Logo } from '../components/ui/Logo'
+import { useTranslation } from 'react-i18next';
 
 export const BrandInfo = () => {
+    const { t, i18n } = useTranslation('layout');
+    const isRTL = i18n.language === 'ar';
+
     return (
-        <div>
+        <div className={isRTL ? 'text-right' : 'text-left'}>
             <Logo />
             <p className="text-gray-300 text-sm leading-6">
-                عيادة الشفاء : نسهل عليك حجز المواعيد والاستشارات الطبية مع
-                الأطباء بسرعة وأمان، مباشرة عبر الإنترنت، دون الحاجة للانتظار
-                لتوفير الوقت وتحسين تجربة المرضى.
+                {t('layout:clinic.description')}
             </p>
         </div>
     )

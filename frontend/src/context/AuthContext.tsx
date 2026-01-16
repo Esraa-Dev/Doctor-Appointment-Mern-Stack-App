@@ -17,28 +17,34 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  isAuthenticated: boolean;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data: user, isLoading } = useGetCurrentUser();
+  const { data: user, isLoading, isError } = useGetCurrentUser();
   const { mutate: logoutMutation } = useLogout();
 
   const logout = useCallback(() => {
     logoutMutation();
   }, [logoutMutation]);
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user: user || null,
         isLoading,
+        isAuthenticated: !!user && !isError,
         logout
       }}
     >
-      {isLoading ? <Loading /> : children}
+      {children}
     </AuthContext.Provider>
   );
 };

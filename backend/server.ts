@@ -10,12 +10,16 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import { connectCloudinary } from "./config/cloudinary.js";
 import morgan from "morgan";
 import helmet from "helmet";
-
+// import { languageMiddleware, setLanguageInLocals } from "./middlewares/language.middleware.js";
+// import { languageMiddleware, setLanguageInLocals } from "./middlewares/language.middleware.js";
+import * as i18nextMiddleware from "i18next-http-middleware";
 import authRouter from "./routes/auth.js";
 import doctorRouter from "./routes/doctor.js";
 import appointmentRouter from "./routes/appointment.js";
 import departmentRouter from "./routes/department.js";
 import patientRouter from "./routes/patient.js";
+import contactRoutes from "./routes/contact.js";
+import i18n from "./config/i18n.js";
 
 dotenv.config();
 connectDb();
@@ -68,6 +72,7 @@ app.use(
 app.use("/uploads", express.static("uploads"));
 app.use(cookieParser());
 app.use(helmet());
+app.use(i18nextMiddleware.handle(i18n));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/auth", authRouter);
@@ -75,6 +80,7 @@ app.use("/api/v1/patient", patientRouter);
 app.use("/api/v1/appointments", appointmentRouter);
 app.use("/api/v1/departments", departmentRouter);
 app.use("/api/v1/doctors", doctorRouter);
+app.use("/api/v1/contact", contactRoutes);
 
 app.use(errorHandler);
 

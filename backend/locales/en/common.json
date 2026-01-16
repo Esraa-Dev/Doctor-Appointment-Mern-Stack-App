@@ -1,0 +1,17 @@
+{
+  "success": "Success",
+  "error": "Error",
+  "notFound": "Not found",
+  "unauthorized": "Unauthorized",
+  "validationFailed": "Validation failed",
+  "serverError": "Internal server error",
+  "created": "Created successfully",
+  "updated": "Updated successfully",
+  "deleted": "Deleted successfully",
+  "retrieved": "Retrieved successfully",
+  "userNotFound": "User not found",
+  "doctorNotFound": "Doctor not found",
+  "appointmentNotFound": "Appointment not found",
+  "departmentNotFound": "Department not found",
+  "defaultError": "An error occurred"
+}

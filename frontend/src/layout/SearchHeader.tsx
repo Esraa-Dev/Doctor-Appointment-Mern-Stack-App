@@ -11,7 +11,7 @@ export const SearchHeader = ({ toggleSidebar }: DashboardHeaderProps) => {
       >
         <Menu size={16} />
       </button>
-      <div className="relative w-72 rounded-4xl flex items-center px-2 gap-1 text-primaryText border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+      <div className="relative w-full md:w-72 rounded-4xl flex items-center px-2 gap-1 text-primaryText border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
         <Search size={16} />
         <input
           type="text"

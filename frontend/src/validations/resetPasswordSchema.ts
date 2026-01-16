@@ -1,15 +1,13 @@
 import { z } from "zod";
+import i18n from "../i18n";
 
 export const resetPasswordSchema = z
   .object({
-    password: z
-      .string()
-      .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
-
+    password: z.string().min(6, i18n.t("validation:minLength", { count: 6 })),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "كلمات المرور غير متطابقة",
+    message: i18n.t("validation:passwordMismatch"),
     path: ["confirmPassword"],
   });
 

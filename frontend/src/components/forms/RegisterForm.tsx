@@ -6,63 +6,67 @@ import { Button } from "../ui/Button";
 import { Link } from "react-router-dom";
 import AppForm from "./AppForm";
 import { useRegister } from "../../hooks/auth/useRegister";
-import {
-    registerSchema,
-    type RegisterFormData,
-} from "../../validations/registerSchema";
+import { registerSchema, type RegisterFormData } from "../../validations/registerSchema";
+import { useTranslation } from "react-i18next";
 
 export const RegisterForm = () => {
+    const { t } = useTranslation();
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({
+    } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
     });
+
     const { mutate, isPending } = useRegister();
+
     const onSubmit = (data: RegisterFormData) => {
         mutate(data);
     };
 
     return (
-        <AppForm title="إنشاء حساب جديد">
+        <AppForm title={t('auth:createNewAccount')}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <TextInput
                     id="firstName"
-                    label="الاسم الأول"
+                    label={t('auth:firstName')}
                     Icon={User}
                     type="text"
-                    placeholder="أدخل الاسم الأول"
+                    placeholder={t('auth:enterFirstName')}
                     register={register("firstName")}
                     error={errors.firstName}
                     requiredInput
                 />
+
                 <TextInput
                     id="lastName"
-                    label=" الاسم الأخير"
+                    label={t('auth:lastName')}
                     Icon={User}
                     type="text"
-                    placeholder="أدخل الاسم الأخير"
+                    placeholder={t('auth:enterLastName')}
                     register={register("lastName")}
                     error={errors.lastName}
                     requiredInput
                 />
+
                 <TextInput
                     id="email"
-                    label="البريد الإلكتروني"
+                    label={t('auth:email')}
                     Icon={Mail}
                     type="email"
-                    placeholder="أدخل بريدك الإلكتروني"
+                    placeholder={t('auth:enterEmail')}
                     register={register("email")}
                     error={errors.email}
                     requiredInput
                 />
+
                 <TextInput
                     id="phone"
-                    label="رقم الهاتف"
+                    label={t('auth:phone')}
                     Icon={Phone}
                     type="text"
-                    placeholder="أدخل رقم الهاتف"
+                    placeholder={t('auth:enterPhone')}
                     register={register("phone")}
                     error={errors.phone}
                     requiredInput
@@ -70,85 +74,87 @@ export const RegisterForm = () => {
 
                 <TextInput
                     id="password"
-                    label="كلمة المرور"
+                    label={t('auth:password')}
                     Icon={Lock}
                     type="password"
-                    placeholder="أدخل كلمة المرور"
+                    placeholder={t('auth:enterPassword')}
                     register={register("password")}
                     error={errors.password}
                     requiredInput
                 />
+
                 <TextInput
                     id="confirmPassword"
-                    label="تأكيد كلمة المرور"
+                    label={t('auth:confirmPassword')}
                     Icon={Lock}
                     type="password"
-                    placeholder="أعد إدخال كلمة المرور"
+                    placeholder={t('auth:reEnterPassword')}
                     register={register("confirmPassword")}
                     error={errors.confirmPassword}
                     requiredInput
                 />
-                <div className="mb-6">
-                    <label className="block font-medium text-primaryText mb-4">
-                        نوع الحساب
-                    </label>
 
-                    <div className="inline-flex rounded-lg border border-primaryBorder p-1 bg-background">
-                        <div className="relative">
+                <div className="mb-6">
+                    <label className="block font-medium text-primaryText text-base! mb-4">
+                        {t('auth:accountType')}
+                    </label>
+                    <div className="inline-flex rounded-lg border border-primaryBorder p-1 bg-background w-full">
+                        <div className="relative flex-1 h-full">
                             <input
                                 id="patient"
                                 type="radio"
                                 value="patient"
                                 {...register("role")}
-                                className="hidden peer"
+                                className="peer hidden"
                                 defaultChecked
                             />
                             <label
                                 htmlFor="patient"
-                                className="inline-flex items-center justify-center px-6 py-3 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 peer-checked:bg-primary peer-checked:text-white text-primaryText"
+                                className="flex cursor-pointer items-center justify-center gap-2 rounded-md px-6 py-3! text-sm! font-medium text-primaryText transition-all duration-200 peer-checked:bg-primary peer-checked:text-white! select-none leading-none mb-0!"
                             >
-                                <User className="w-4 h-4 ml-2" />
-                                مريض
+                                <User className="w-4 h-4 shrink-0" />
+                                <span className="flex items-center">مريض</span>
                             </label>
                         </div>
 
-                        <div className="relative">
+                        <div className="relative flex-1 h-full">
                             <input
                                 id="doctor"
                                 type="radio"
                                 value="doctor"
                                 {...register("role")}
-                                className="hidden peer"
+                                className="peer hidden"
                             />
                             <label
                                 htmlFor="doctor"
-                                className="inline-flex items-center justify-center px-6 py-3 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 peer-checked:bg-primary peer-checked:text-white text-primaryText"
+                                className="flex cursor-pointer items-center justify-center gap-2 rounded-md px-6 py-3! text-sm! font-medium text-primaryText transition-all duration-200 peer-checked:bg-primary peer-checked:text-white! select-none leading-none mb-0!"
                             >
-                                <Stethoscope className="w-4 h-4 ml-2" />
-                                طبيب
+                                <Stethoscope className="w-4 h-4 shrink-0" />
+                                <span className="flex items-center">طبيب</span>
                             </label>
                         </div>
                     </div>
                 </div>
+
                 <Button className="w-full py-4" type="submit" disabled={isPending}>
                     {isPending ? (
-                        <div className="flex items-center justify-center">
-                            <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                            جاري الإنشاء
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            {t('auth:creating')}
                         </div>
                     ) : (
-                        "إنشاء الحساب"
+                        t('auth:createAccount')
                     )}
                 </Button>
 
                 <div className="mt-6 text-center">
-                    <p className="text-primaryText text-sm">
-                        لديك حساب بالفعل؟{" "}
+                    <p className="text-primaryText text-sm!">
+                        {t('auth:haveAccount')}{" "}
                         <Link
                             to="/login"
                             className="text-secondary hover:text-primary font-semibold"
                         >
-                            سجل الدخول
+                            {t('auth:login')}
                         </Link>
                     </p>
                 </div>

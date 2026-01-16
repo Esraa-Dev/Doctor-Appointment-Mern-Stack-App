@@ -26,11 +26,14 @@ import VideoCallPage from "./pages/VideoCallPage";
 import { SocketProvider } from "./context/SocketContext";
 import PatientAppointments from "./pages/PatientAppointments";
 import IncomingCallModal from "./components/features/IncomingCallModal";
+import LanguageHandler from "./components/shared/LanguageHandler";
+import DepartmentsPage from "./pages/DepartmentsPage";
 
 const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <LanguageHandler />
         <SocketProvider>
           <IncomingCallModal />
           <Routes>
@@ -44,8 +47,10 @@ const App = () => {
               <Route path="/verify-reset-otp" element={<ResetOtpVerificationPage />} />
               <Route path="/doctors" element={<DoctorPage />} />
               <Route path="/about" element={<About />} />
+              <Route path="/departments" element={<DepartmentsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/doctor/onboarding" element={<DoctorOnboarding />} />
+              <Route path="/doctor-list" element={<DoctorList />} />
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={["patient"]} />}>
@@ -54,7 +59,6 @@ const App = () => {
                 <Route path="/appointments" element={<PatientAppointments />} />
                 <Route path="/booking/:id" element={<BookAppointment />} />
                 <Route path="/appointments/:docId" element={<Appointment />} />
-                <Route path="/doctor-list" element={<DoctorList />} />
               </Route>
             </Route>
 

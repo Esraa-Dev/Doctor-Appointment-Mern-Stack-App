@@ -1,0 +1,21 @@
+{
+  "product": {
+    "name": "Medical Appointment System",
+    "link": "Al-Shifa Clinic",
+    "copyright": "All rights reserved © {{year}}"
+  },
+  "verification": {
+    "subject": "Email Verification",
+    "greeting": "Hello",
+    "intro": "Hello {{username}}! Please use the following verification code to confirm your email: {{otp}}",
+    "outro": "This code is valid for 10 minutes only.",
+    "signature": "Best regards"
+  },
+  "resetPassword": {
+    "subject": "Password Reset OTP",
+    "greeting": "Hello",
+    "intro": "Hello {{username}}! We received a request to reset your password.\n\nYour verification code is: {{otp}}",
+    "outro": "This code is valid for 10 minutes only.",
+    "signature": "Best regards"
+  }
+}

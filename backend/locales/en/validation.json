@@ -1,0 +1,19 @@
+{
+  "firstNameRequired": "First name is required",
+  "firstNameMin": "First name must be at least 3 characters",
+  "lastNameRequired": "Last name is required",
+  "lastNameMin": "Last name must be at least 3 characters",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Invalid email format",
+  "passwordRequired": "Password is required",
+  "passwordMin": "Password must be at least 8 characters",
+  "confirmPasswordRequired": "Confirm password is required",
+  "passwordsMustMatch": "Passwords must match",
+  "phoneRequired": "Phone number is required",
+  "phoneInvalid": "Invalid phone number",
+  "roleInvalid": "Role must be one of: patient, doctor",
+  "otpRequired": "OTP is required",
+  "otpLength": "OTP must be 6 digits",
+  "otpNumeric": "OTP must contain only numbers",
+  "typeInvalid": "Type must be either reset or verification"
+}

@@ -1,10 +1,12 @@
 import { z } from "zod";
+import i18n from "../i18n";
 
 export const resetOtpSchema = z.object({
   resetPasswordOtp: z
     .string()
-    .length(6, "الرجاء إدخال الرمز المكون من 6 أرقام")
-    .regex(/^\d{6}$/, "يجب أن يتكون الرمز من أرقام فقط"),
+    .min(1, i18n.t("validation:otpRequired"))
+    .length(6, i18n.t("validation:otpLength", { count: 6 }))
+    .regex(/^\d+$/, i18n.t("validation:otpNumbersOnly")),
 });
 
 export type ResetOtpFormData = z.infer<typeof resetOtpSchema>;

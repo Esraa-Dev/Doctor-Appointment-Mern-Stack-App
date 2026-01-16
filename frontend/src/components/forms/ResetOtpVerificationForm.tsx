@@ -9,8 +9,10 @@ import { useVerifyResetOtp } from "../../hooks/auth/useVerifyResetOtp";
 import { useResendOtp } from "../../hooks/auth/useResendOtp";
 import { useLocation } from "react-router-dom";
 import { CountdownTimer } from "../CountdownTimer";
+import { useTranslation } from "react-i18next";
 
 export const ResetOtpVerificationForm = () => {
+    const { t } = useTranslation('auth', );
     const [code, setCode] = useState(Array(6).fill(""));
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const { mutate: verifyResetOtp, isPending } = useVerifyResetOtp();
@@ -88,7 +90,7 @@ export const ResetOtpVerificationForm = () => {
     };
 
     return (
-        <AppForm title="تأكيد رمز إعادة تعيين كلمة المرور">
+        <AppForm title={t('auth:resetCodeVerification')}>
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                 <div className="text-center">
                     <div className="w-20 h-20 bg-linear-to-r rounded-full from-primary to-secondary flex-center justify-center mx-auto mb-4">
@@ -96,7 +98,7 @@ export const ResetOtpVerificationForm = () => {
                     </div>
 
                     <p className="text-base font-semibold text-primaryText">
-                        تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني
+                        {t('auth:resetCodeSent')}
                     </p>
                     {userEmail && (
                         <p className="text-sm text-gray-600 font-medium mt-2">
@@ -135,10 +137,10 @@ export const ResetOtpVerificationForm = () => {
                     {isPending ? (
                         <div className="flex items-center justify-center gap-2">
                             <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                            جاري التحقق...
+                            {t('auth:verifying')}
                         </div>
                     ) : (
-                        "تأكيد الرمز"
+                        t('auth:verifyCode')
                     )}
                 </Button>
 
@@ -146,17 +148,16 @@ export const ResetOtpVerificationForm = () => {
                     {isResending ? (
                         <div className="text-sm text-gray-600 flex items-center gap-2">
                             <Loader2 className="h-4 w-4 animate-spin" />
-                            جاري الإرسال...
+                            {t('auth:sending')}
                         </div>
                     ) : (
                         <CountdownTimer
                             storageKey="otp_expiry_reset"
                             userEmail={userEmail}
                             onResend={handleResendOtp}
-                            resendText="إعادة إرسال الرمز"
-                            timerText="إعادة الإرسال بعد"
+                            resendText={t('auth:resendCode')}
+                            timerText={t('auth:resendIn')}
                         />
-
                     )}
                 </div>
             </form>

@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "home": "Home",
+    "doctors": "Doctors",
+    "departments": "Departments",
+    "appointments": "Appointments",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "socialLink": "Social link",
+    "allRightsReserved": "All rights reserved",
+    "clinicName": "Al-Shifa Clinic",
+    "clinicFullName": "For Al-Shifa Clinic",
+    "copyright": "All rights reserved for Al-Shifa Clinic © {{year}}"
+  },
+  "contact": {
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "addressDetail": "Nasr City, Makram Ebeid Street, Doctors Tower, 3rd Floor",
+    "available247": "Available 24/7",
+    "responseTime": "Response within 24 hours",
+    "workingDays": "Sunday to Thursday",
+    "workingHours": "Working Hours",
+    "hours": "9 AM - 5 PM"
+  },
+  "clinic": {
+    "description": "Al-Shifa Clinic: We make it easy for you to book appointments and medical consultations with doctors quickly and securely, directly online, without the need for waiting, to save time and improve patient experience.",
+    "name": "Al Shifa",
+    "subname": "Clinic"
+  }
+}

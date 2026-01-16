@@ -1,35 +1,37 @@
 import { z } from "zod";
+import i18n from "../i18n";
+
 const UserRole = z.enum(["patient", "doctor"]);
 
 export const registerSchema = z
   .object({
     firstName: z
       .string()
-      .min(1, "الاسم الأول مطلوب")
-      .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف"),
+      .min(1, i18n.t('validation:required'))
+      .min(3, i18n.t('validation:minLength', { count: 3 })),
     lastName: z
       .string()
-      .min(1, "الاسم الأخير مطلوب")
-      .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف"),
+      .min(1, i18n.t('validation:required'))
+      .min(3, i18n.t('validation:minLength', { count: 3 })),
     email: z
       .string()
-      .min(1, "البريد الإلكتروني مطلوب")
-      .email("البريد الإلكتروني غير صالح"),
+      .min(1, i18n.t('validation:required'))
+      .email(i18n.t('validation:invalidEmail')),
     phone: z
       .string()
-      .min(1, "رقم الهاتف مطلوب")
-      .regex(/^[0-9+]+$/, "رقم الهاتف يجب أن يحتوي على أرقام فقط و +")
-      .min(10, "رقم الهاتف يجب أن يكون على الأقل 10 أرقام")
-      .max(15, "رقم الهاتف يجب ألا يتجاوز 15 رقم"),
+      .min(1, i18n.t('validation:required'))
+      .regex(/^[0-9+]+$/, i18n.t('validation:invalidPhone'))
+      .min(10, i18n.t('validation:minLength', { count: 10 }))
+      .max(15, i18n.t('validation:minLength', { count: 15 })),
     password: z
       .string()
-      .min(1, "كلمة المرور مطلوبة")
-      .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
-    confirmPassword: z.string().min(1, "تأكيد كلمة المرور مطلوب"),
+      .min(1, i18n.t('validation:required'))
+      .min(6, i18n.t('validation:minLength', { count: 6 })),
+    confirmPassword: z.string().min(1, i18n.t('validation:required')),
     role: UserRole,
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "كلمات المرور غير متطابقة",
+    message: i18n.t('validation:passwordMismatch'),
     path: ["confirmPassword"],
   });
 

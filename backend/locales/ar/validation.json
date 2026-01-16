@@ -1,0 +1,19 @@
+{
+  "firstNameRequired": "الاسم الأول مطلوب",
+  "firstNameMin": "الاسم الأول يجب أن يكون على الأقل 3 أحرف",
+  "lastNameRequired": "اسم العائلة مطلوب",
+  "lastNameMin": "اسم العائلة يجب أن يكون على الأقل 3 أحرف",
+  "emailRequired": "البريد الإلكتروني مطلوب",
+  "emailInvalid": "صيغة البريد الإلكتروني غير صالحة",
+  "passwordRequired": "كلمة المرور مطلوبة",
+  "passwordMin": "كلمة المرور يجب أن تكون على الأقل 8 أحرف",
+  "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+  "passwordsMustMatch": "كلمات المرور غير متطابقة",
+  "phoneRequired": "رقم الهاتف مطلوب",
+  "phoneInvalid": "رقم الهاتف غير صالح",
+  "roleInvalid": "الدور يجب أن يكون: مريض أو طبيب",
+  "otpRequired": "رمز التحقق مطلوب",
+  "otpLength": "رمز التحقق يجب أن يكون 6 أرقام",
+  "otpNumeric": "رمز التحقق يجب أن يحتوي على أرقام فقط",
+  "typeInvalid": "النوع يجب أن يكون: إعادة تعيين أو تحقق"
+}

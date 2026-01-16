@@ -7,8 +7,10 @@ import { useResetPassword } from "../../hooks/auth/useResetPassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema, type ResetPasswordFormData } from "../../validations/resetPasswordSchema";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ResetPasswordForm = () => {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -24,22 +26,22 @@ const ResetPasswordForm = () => {
   };
 
   return (
-    <AppForm title="إعادة تعيين كلمة المرور">
+    <AppForm title={t('auth:resetPassword')}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <TextInput
-          label="كلمة المرور الجديدة"
+          label={t('auth:newPassword')}
           Icon={Lock}
           type="password"
-          placeholder="أدخل كلمة المرور الجديدة"
+          placeholder={t('auth:enterNewPassword')}
           register={register("password")}
           error={errors.password}
         />
 
         <TextInput
-          label="تأكيد كلمة المرور الجديدة"
+          label={t('auth:confirmNewPassword')}
           Icon={Lock}
           type="password"
-          placeholder="أعد إدخال كلمة المرور الجديدة"
+          placeholder={t('auth:reEnterNewPassword')}
           register={register("confirmPassword")}
           error={errors.confirmPassword}
         />
@@ -48,14 +50,12 @@ const ResetPasswordForm = () => {
           {isPending ? (
             <div className="flex items-center justify-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin ml-2" />
-              <span>جاري إعادة التعيين...</span>
+              <span>{t('auth:resetting')}</span>
             </div>
           ) : (
-            "إعادة تعيين كلمة المرور"
+            t('auth:resetPasswordButton')
           )}
         </Button>
-
-
       </form>
     </AppForm>
   );

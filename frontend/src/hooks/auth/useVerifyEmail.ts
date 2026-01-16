@@ -3,17 +3,20 @@ import { authService } from "../../services/authService";
 import { toast } from "react-toastify";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const useVerifyEmail = () => {
-  const navigate = useNavigate();
-  return useMutation({
-    mutationFn: authService.verifyEmail,
-    onSuccess: (data) => {
-      toast.success(data.message);
-      navigate("/login");
-    },
-    onError: (error: any) => {
-      toast.error(getApiErrorMessage(error, "حدث خطأ أثناء التحقق"));
-    },
-  });
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+    
+    return useMutation({
+        mutationFn: authService.verifyEmail,
+        onSuccess: (data) => {
+            toast.success(data.message);
+            navigate("/login");
+        },
+        onError: (error: any) => {
+            toast.error(getApiErrorMessage(error, t("common:defaultError")));
+        },
+    });
 };

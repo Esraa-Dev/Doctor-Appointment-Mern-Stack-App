@@ -1,12 +1,13 @@
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
-export const loginSchema = z.object({
-  email: z
-    .string()
-    .email("البريد الإلكتروني غير صالح"),
-  password: z
-    .string()
-    .min(1, "كلمة المرور مطلوبة"),
-});
+export const loginSchema = () => {
+  const { t } = useTranslation(["validation"]);
 
-export type LoginFormData = z.infer<typeof loginSchema>;
+  return z.object({
+    email: z.string().min(1, t("required")).email(t("invalidEmail")),
+    password: z.string().min(1, t("required")),
+  });
+};
+
+export type LoginFormData = z.infer<ReturnType<typeof loginSchema>>;

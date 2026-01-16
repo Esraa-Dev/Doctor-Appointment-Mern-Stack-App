@@ -1,3 +1,5 @@
+const isProduction = process.env.NODE_ENV === "production";
+
 export enum UserRole {
   ADMIN = "admin",
   DOCTOR = "doctor",
@@ -56,4 +58,19 @@ export const EmergencyRelationship = {
   SIBLING: "sibling",
   FRIEND: "friend",
   OTHER: "other",
+} as const;
+
+export const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: "/",
+} as const;
+
+export const LOGOUT_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+  path: "/",
 } as const;

@@ -3,15 +3,18 @@ import { authService } from "../../services/authService";
 import { toast } from "react-toastify";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { setAuthState } from "../../utils/authState";
 
 export const useLogin = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { t } = useTranslation(['auth', 'common']);
 
   return useMutation({
     mutationFn: authService.login,
     onSuccess: (data) => {
-      toast.success(data?.message || "Login successful!");
+      toast.success(data?.message || t("auth.loginSuccess"));
 
       queryClient.invalidateQueries({
         queryKey: ["currentUser"],
@@ -23,23 +26,25 @@ export const useLogin = () => {
         navigate("/");
         return;
       }
-
+      
+      setAuthState(true);
+      
       if (user.role === "doctor") {
         if (user.profileStatus === "incomplete") {
-          navigate("/doctor/onboarding");
+          navigate("/doctor/onboarding", { replace: true });
         } else {
-          navigate("/doctor/dashboard");
+          navigate("/doctor/dashboard", { replace: true });
         }
       } else if (user.role === "patient") {
-        navigate("/");
+        navigate("/", { replace: true });
       } else if (user.role === "admin") {
-        navigate("/admin/dashboard");
+        navigate("/admin/dashboard", { replace: true });
       } else {
-        navigate("/");
+        navigate("/", { replace: true });
       }
     },
     onError: (error: any) => {
-      toast.error(getApiErrorMessage(error, "حدث خطأ ما"));
+      toast.error(getApiErrorMessage(error, t("common.defaultError")));
     },
   });
 };

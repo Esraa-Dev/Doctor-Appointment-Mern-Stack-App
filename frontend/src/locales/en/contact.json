@@ -1,0 +1,52 @@
+{
+  "heroDescription": "We're here to help. Contact us for immediate support",
+  "sendMessage": "Send a Message",
+  "fullName": "Full Name",
+  "enterFullName": "Enter your full name",
+  "email": "Email Address",
+  "enterEmail": "Enter your email",
+  "phone": "Phone Number",
+  "enterPhone": "Enter your phone number",
+  "subject": "Subject",
+  "enterSubject": "Enter message subject",
+  "message": "Message",
+  "enterMessage": "Write your message here...",
+  "sendMessageButton": "Send Message",
+  "sending": "Sending...",
+  "successMessage": "Your message has been sent successfully! We'll get back to you soon.",
+  "submitError": "Failed to send message",
+  "defaultError": "An error occurred while sending the message. Please try again.",
+  "contactInfo": "Contact Information",
+  "contactDescription": "Feel free to contact us for any inquiries or assistance",
+  "faqTitle": "Frequently Asked Questions",
+  "contact": {
+    "phone": "Phone",
+    "available247": "Available 24/7",
+    "email": "Email",
+    "responseTime": "Response within 24 hours",
+    "address": "Address",
+    "addressDetail": "Riyadh, Saudi Arabia",
+    "workingHours": "Working Hours",
+    "hours": "9 AM - 5 PM",
+    "workingDays": "Sunday to Thursday"
+  },
+  "faq1": {
+    "question": "How can I book an appointment?",
+    "answer": "You can book an appointment through the website or app with simple steps"
+  },
+  "faq2": {
+    "question": "Is the service available 24/7?",
+    "answer": "Yes, booking and technical support services are available 24/7"
+  },
+  "faq3": {
+    "question": "How can I cancel an appointment?",
+    "answer": "You can cancel appointments from My Appointments page up to 24 hours before"
+  },
+  "contactFormErrors": {
+    "name": "Name must be at least 2 characters",
+    "email": "Invalid email address",
+    "phone": "Phone must be at least 10 digits",
+    "subject": "Subject must be at least 3 characters",
+    "message": "Message must be at least 10 characters"
+  }
+}
