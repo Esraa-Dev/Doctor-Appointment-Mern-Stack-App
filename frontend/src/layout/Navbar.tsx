@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 
 export const Navbar = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation(['auth', 'common', 'layout']);
+  const { t } = useTranslation(['auth', 'common']);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, isLoading, isAuthenticated, logout } = useAuth();
@@ -83,6 +83,7 @@ export const Navbar = () => {
               >
                 {t('auth:login')}
               </Button>
+              
             )}
           </div>
         </div>

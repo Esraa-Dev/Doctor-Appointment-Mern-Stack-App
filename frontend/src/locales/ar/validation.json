@@ -19,5 +19,8 @@
   "endTimeRequired": "وقت الانتهاء مطلوب",
   "atLeastOneDay": "يجب إضافة يوم عمل واحد على الأقل",
   "fileTooLarge": "يجب أن يكون الملف أقل من 2 ميجابايت",
-  "invalidFileType": "يسمح فقط بصور JPG أو PNG"
+  "invalidFileType": "يسمح فقط بصور JPG أو PNG",
+    "duplicateDays": "لا يمكن تكرار نفس اليوم أكثر من مرة",
+    
+  "allDaysAdded": "تمت إضافة جميع أيام الأسبوع"
 }

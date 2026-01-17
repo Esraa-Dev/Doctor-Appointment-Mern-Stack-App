@@ -16,5 +16,18 @@
   "defaultError": "حدث خطأ ما",
   "profile": "الملف الشخصي",
   "logout": "تسجيل الخروج",
-  "appointment": "موعد"
+  "appointment": "موعد",
+  "loading": "جاري التحميل...",
+  "noAccessPage": {
+    "title": "403",
+    "subtitle": "غير مصرح بالوصول",
+    "description": "عذراً، ليس لديك صلاحية للوصول إلى هذه الصفحة",
+    "backHome": "العودة للصفحة الرئيسية"
+  },
+  "notFoundPage": {
+    "title": "404",
+    "subtitle": "الصفحة غير موجودة",
+    "description": "عذراً، الصفحة التي تبحث عنها غير موجودة",
+    "backHome": "العودة للصفحة الرئيسية"
+  }
 }

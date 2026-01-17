@@ -1,6 +1,7 @@
 {
   "welcome": "Welcome to Doctor Onboarding",
   "subtitle": "Complete your professional profile to start accepting appointments",
+  "personalInfo": "Personal Information",
   "professionalInfo": "Professional Information",
   "selectDepartment": "Select Department",
   "chooseDepartment": "Choose a department",
@@ -37,7 +38,7 @@
   "friday": "Friday",
   "saturday": "Saturday",
   "sunday": "Sunday",
+  "personalInfoStep": "Personal Information",
   "professionalInfoStep": "Professional Information",
   "appointmentsStep": "Schedule & Pricing"
 }
-

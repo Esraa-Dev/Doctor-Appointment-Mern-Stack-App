@@ -4,146 +4,111 @@ import { UserRole } from "../constants.js";
 import Joi from "joi";
 
 export interface IDoctor extends IUser {
-  department: mongoose.Types.ObjectId;
-  specialization: string;
-  qualification: string;
-  experience: number;
-  fee: number;
-  description?: string;
-  schedule: {
+  department?: mongoose.Types.ObjectId;
+  specialization_en?: string;
+  specialization_ar?: string;
+  qualification_en?: string;
+  qualification_ar?: string;
+  experience?: number;
+  fee?: number;
+  description_en?: string;
+  description_ar?: string;
+  schedule?: {
     day: string;
     startTime: string;
     endTime: string;
   }[];
-  rating: number;
-  totalReviews: number;
-  profileStatus: "incomplete" | "completed";
-  status: "pending" | "approved" | "rejected";
-  isActive: boolean;
+  rating?: number;
+  totalReviews?: number;
+  profileStatus?: "incomplete" | "completed";
+  status?: "pending" | "approved" | "rejected";
+  isActive: boolean; 
 }
 
-const DoctorSchema: Schema = new Schema({
-  department: {
-    type: Schema.Types.ObjectId,
-    ref: "Department",
-  },
-  specialization: {
-    type: String,
-    trim: true,
-  },
-  qualification: {
-    type: String,
-    trim: true,
-  },
-  experience: {
-    type: Number,
-    min: 0,
-    default: 0,
-  },
-  fee: {
-    type: Number,
-    min: 0,
-  },
-  description: {
-    type: String,
-  },
-  schedule: [
-    {
-      day: {
-        type: String,
-        enum: [
-          "monday",
-          "tuesday",
-          "wednesday",
-          "thursday",
-          "friday",
-          "saturday",
-          "sunday",
-        ],
-      },
-      startTime: {
-        type: String,
-      },
-      endTime: {
-        type: String,
-      },
+const DoctorSchema: Schema = new Schema(
+  {
+    department: {
+      type: Schema.Types.ObjectId,
+      ref: "Department",
+      required: false,
     },
-  ],
-  status: {
-    type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending",
+    specialization_en: { type: String, trim: true, default: "" },
+    specialization_ar: { type: String, trim: true, default: "" },
+    qualification_en: { type: String, trim: true, default: "" },
+    qualification_ar: { type: String, trim: true, default: "" },
+    experience: { type: Number, min: 0, default: 0 },
+    fee: { type: Number, min: 0, default: 0 },
+    description_en: { type: String, default: "" },
+    description_ar: { type: String, default: "" },
+    schedule: [
+      {
+        day: {
+          type: String,
+          enum: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+        },
+        startTime: { type: String },
+        endTime: { type: String },
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    totalReviews: { type: Number, default: 0 },
+    profileStatus: {
+      type: String,
+      enum: ["incomplete", "completed"],
+      default: "incomplete",
+    },
+    isActive: { type: Boolean, default: true },
   },
-  rating: {
-    type: Number,
-    default: 0,
-    min: 0,
-    max: 5,
-  },
-  totalReviews: {
-    type: Number,
-    default: 0,
-  },
-  profileStatus: {
-    type: String,
-    enum: ["incomplete", "completed"],
-    default: "incomplete",
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-});
+  { timestamps: true }
+);
 
-DoctorSchema.index({
-  firstName: "text",
-  lastName: "text",
-  specialization: "text",
-});
-
-export const validateUpdateDoctorProfile = Joi.object({
-  department: Joi.string().required().messages({
-    "string.empty": "القسم مطلوب",
-  }),
-  specialization: Joi.string().required().messages({
-    "string.empty": "التخصص مطلوب",
-  }),
-  qualification: Joi.string().required().messages({
-    "string.empty": "المؤهل مطلوب",
-  }),
-  experience: Joi.number().min(0).max(50).required().messages({
-    "number.base": "الخبرة يجب أن تكون رقم",
-    "number.min": "الخبرة يجب أن تكون 0 أو أكثر",
-  }),
-  fee: Joi.number().min(100).max(5000).required().messages({
-    "number.base": "سعر الكشف يجب أن يكون رقم",
-    "number.min": "أقل سعر للكشف 100 جنية",
-  }),
-  description: Joi.string().allow("").optional(),
-  schedule: Joi.array()
-    .items(
-      Joi.object({
-        day: Joi.string()
-          .valid(
-            "monday",
-            "tuesday",
-            "wednesday",
-            "thursday",
-            "friday",
-            "saturday",
-            "sunday"
-          )
-          .required(),
-        startTime: Joi.string().required(),
-        endTime: Joi.string().required(),
-      })
-    )
-    .min(1)
-    .required()
-    .messages({
-      "array.min": "يجب إضافة يوم عمل واحد على الأقل",
-    }),
-});
+export const validateUpdateDoctorProfile = (t: any) => {
+  return Joi.object({
+    department: Joi.string().required(),
+    specialization_en: Joi.string().required(),
+    specialization_ar: Joi.string().required(),
+    qualification_en: Joi.string().required(),
+    qualification_ar: Joi.string().required(),
+    experience: Joi.number().min(0).max(50).required(),
+    fee: Joi.number().min(0).required(),
+    description_en: Joi.string().max(2000).allow(""),
+    description_ar: Joi.string().max(2000).allow(""),
+    schedule: Joi.array()
+      .items(
+        Joi.object({
+          day: Joi.string()
+            .valid(
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday",
+              "sunday"
+            )
+            .required(),
+          startTime: Joi.string().required(),
+          endTime: Joi.string().required(),
+        })
+      )
+      .min(1)
+      .required()
+      .custom((value, helpers) => {
+        const days = value.map((item: any) => item.day);
+        const uniqueDays = new Set(days);
+        if (uniqueDays.size !== days.length) {
+          return helpers.error('any.duplicate');
+        }
+        return value;
+      }, 'Duplicate days validation')
+      .message(t('validation:duplicateDays')),
+  });
+};
 
 export const Doctor = User.discriminator<IDoctor>(
   UserRole.DOCTOR,

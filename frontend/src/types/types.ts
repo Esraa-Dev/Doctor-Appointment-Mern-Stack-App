@@ -311,6 +311,7 @@ export interface SelectProps {
   requiredSelect?: boolean;
   disabled?: boolean;
   className?: string;
+  placeholder?:string;
 }
 
 export interface AppointmentCardProps {

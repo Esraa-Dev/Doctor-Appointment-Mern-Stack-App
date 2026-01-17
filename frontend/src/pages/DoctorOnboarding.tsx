@@ -1,8 +1,10 @@
-import {DoctorOnboardingForm} from '../components/forms/DoctorOnboardingForm'
+import { useTranslation } from 'react-i18next';
+import { DoctorOnboardingForm } from '../components/forms/DoctorOnboardingForm'
 
 const DoctorOnboarding = () => {
+  const { i18n } = useTranslation();
   return (
-  <DoctorOnboardingForm />
+    <DoctorOnboardingForm key={i18n.language} />
   )
 }
 

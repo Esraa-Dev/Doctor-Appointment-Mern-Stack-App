@@ -15,5 +15,24 @@
   "otpRequired": "رمز التحقق مطلوب",
   "otpLength": "رمز التحقق يجب أن يكون 6 أرقام",
   "otpNumeric": "رمز التحقق يجب أن يحتوي على أرقام فقط",
-  "typeInvalid": "النوع يجب أن يكون: إعادة تعيين أو تحقق"
+  "typeInvalid": "النوع يجب أن يكون: إعادة تعيين أو تحقق",
+  
+  "departmentRequired": "القسم مطلوب",
+  "specializationEnRequired": "التخصص (الإنجليزية) مطلوب",
+  "specializationArRequired": "التخصص (العربية) مطلوب",
+  "qualificationEnRequired": "المؤهل (الإنجليزية) مطلوب",
+  "qualificationArRequired": "المؤهل (العربية) مطلوب",
+  "experienceRequired": "الخبرة مطلوبة",
+  "experienceMin": "الخبرة يجب أن تكون 0 أو أكثر",
+  "experienceMax": "الخبرة لا يمكن أن تتجاوز 50 سنة",
+  "feeRequired": "الرسوم مطلوبة",
+  "feeMin": "الرسوم يجب أن تكون 0 أو أكثر",
+  "descriptionEnMax": "الوصف (الإنجليزية) لا يمكن أن يتجاوز 2000 حرف",
+  "descriptionArMax": "الوصف (العربية) لا يمكن أن يتجاوز 2000 حرف",
+  "scheduleRequired": "الجدول الزمني مطلوب",
+  "scheduleMin": "يجب إضافة يوم واحد على الأقل في الجدول الزمني",
+  "dayRequired": "اليوم مطلوب",
+  "dayInvalid": "اليوم غير صالح، يجب أن يكون أحد أيام الأسبوع",
+  "startTimeRequired": "وقت البدء مطلوب",
+  "endTimeRequired": "وقت الانتهاء مطلوب"
 }

@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 export const getAllDoctors = AsyncHandler(
   async (req: Request, res: Response) => {
     const { search, department, fee, experience, schedule, sortBy } = req.query;
-    console.log("search:", search);
+    
     let filter: any = {
       status: "approved",
       isActive: true,
@@ -20,7 +20,8 @@ export const getAllDoctors = AsyncHandler(
       filter.$or = [
         { firstName: regex },
         { lastName: regex },
-        { specialization: regex },
+        { specialization_en: regex },
+        { specialization_ar: regex },
       ];
     }
 
@@ -55,7 +56,7 @@ export const getAllDoctors = AsyncHandler(
 
     res
       .status(200)
-      .json(new ApiResponse("Doctors retrieved successfully", doctors, 200));
+      .json(new ApiResponse(req.t("doctor:doctorsRetrieved"), doctors, 200));
   }
 );
 
@@ -76,7 +77,7 @@ export const getTopDoctors = AsyncHandler(
     res
       .status(200)
       .json(
-        new ApiResponse("Top doctors retrieved successfully", topDoctors, 200)
+        new ApiResponse(req.t("doctor:topDoctorsRetrieved"), topDoctors, 200)
       );
   }
 );
@@ -86,12 +87,12 @@ export const getDoctorProfile = AsyncHandler(
     const id = req.user?._id;
     const doctor = await Doctor.findById(id);
     if (!doctor) {
-      throw new ApiError("Doctor not found", 404);
+      throw new ApiError(req.t("doctor:doctorNotFound"), 404);
     }
     res
       .status(200)
       .json(
-        new ApiResponse("Doctor profile fetched successfully", doctor, 200)
+        new ApiResponse(req.t("doctor:doctorProfileFetched"), doctor, 200)
       );
   }
 );
@@ -101,12 +102,20 @@ export const updateDoctorProfile = AsyncHandler(
     const userId = req.user?._id;
 
     if (!userId) {
-      throw new ApiError("Unauthorized access", 401);
+      throw new ApiError(req.t("doctor:unauthorizedAccess"), 401);
     }
 
-    const { error } = validateUpdateDoctorProfile.validate(req.body);
+    const currentDoctor = await Doctor.findById(userId);
+    if (!currentDoctor) {
+      throw new ApiError(req.t("doctor:doctorNotFound"), 404);
+    }
+
+    const { error } = validateUpdateDoctorProfile(req.t).validate(req.body);
     if (error) {
-      throw new ApiError(error.details[0].message, 400);
+      const messages = error.details.map((err) => 
+        err.message.replace(/["]/g, "")
+      );
+      throw new ApiError(req.t("doctor:validationFailed"), 400, messages);
     }
 
     const updatedDoctor = await Doctor.findByIdAndUpdate(
@@ -124,7 +133,7 @@ export const updateDoctorProfile = AsyncHandler(
       .status(200)
       .json(
         new ApiResponse(
-          "Doctor profile updated successfully",
+          req.t("doctor:doctorProfileUpdated"),
           updatedDoctor,
           200
         )
@@ -137,10 +146,85 @@ export const getDoctorById = AsyncHandler(
     const { id } = req.params;
     const doctor = await Doctor.findById(id);
     if (!doctor) {
-      throw new ApiError("Doctor not found", 404);
+      throw new ApiError(req.t("doctor:doctorNotFound"), 404);
     }
     res
       .status(200)
-      .json(new ApiResponse("Doctor fetched successfully", doctor, 200));
+      .json(new ApiResponse(req.t("doctor:doctorFetched"), doctor, 200));
+  }
+);
+
+export const updateDoctorStatus = AsyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["pending", "approved", "rejected"].includes(status)) {
+      throw new ApiError(req.t("doctor:validationFailed"), 400);
+    }
+
+    const doctor = await Doctor.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!doctor) {
+      throw new ApiError(req.t("doctor:doctorNotFound"), 404);
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(req.t("doctor:doctorStatusUpdated"), doctor, 200));
+  }
+);
+
+export const toggleDoctorActiveStatus = AsyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { isActive } = req.body;
+
+    const doctor = await Doctor.findByIdAndUpdate(
+      id,
+      { isActive },
+      { new: true }
+    );
+
+    if (!doctor) {
+      throw new ApiError(req.t("doctor:doctorNotFound"), 404);
+    }
+
+    const message = isActive 
+      ? req.t("doctor:doctorActivated")
+      : req.t("doctor:doctorDeactivated");
+
+    res
+      .status(200)
+      .json(new ApiResponse(message, doctor, 200));
+  }
+);
+
+export const updateProfileStatus = AsyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { profileStatus } = req.body;
+
+    if (!["incomplete", "completed"].includes(profileStatus)) {
+      throw new ApiError(req.t("doctor:validationFailed"), 400);
+    }
+
+    const doctor = await Doctor.findByIdAndUpdate(
+      id,
+      { profileStatus },
+      { new: true }
+    );
+
+    if (!doctor) {
+      throw new ApiError(req.t("doctor:doctorNotFound"), 404);
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(req.t("doctor:profileStatusUpdated"), doctor, 200));
   }
 );

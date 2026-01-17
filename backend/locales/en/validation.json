@@ -15,5 +15,24 @@
   "otpRequired": "OTP is required",
   "otpLength": "OTP must be 6 digits",
   "otpNumeric": "OTP must contain only numbers",
-  "typeInvalid": "Type must be either reset or verification"
+  "typeInvalid": "Type must be either reset or verification",
+  
+  "departmentRequired": "Department is required",
+  "specializationEnRequired": "Specialization (English) is required",
+  "specializationArRequired": "Specialization (Arabic) is required",
+  "qualificationEnRequired": "Qualification (English) is required",
+  "qualificationArRequired": "Qualification (Arabic) is required",
+  "experienceRequired": "Experience is required",
+  "experienceMin": "Experience must be 0 or more",
+  "experienceMax": "Experience cannot exceed 50 years",
+  "feeRequired": "Fee is required",
+  "feeMin": "Fee must be 0 or more",
+  "descriptionEnMax": "Description (English) cannot exceed 2000 characters",
+  "descriptionArMax": "Description (Arabic) cannot exceed 2000 characters",
+  "scheduleRequired": "Schedule is required",
+  "scheduleMin": "At least one day must be added to the schedule",
+  "dayRequired": "Day is required",
+  "dayInvalid": "Invalid day, must be a weekday",
+  "startTimeRequired": "Start time is required",
+  "endTimeRequired": "End time is required"
 }

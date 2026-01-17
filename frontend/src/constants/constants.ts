@@ -15,8 +15,9 @@ import type { ContactInfoItem, ContactMethod } from "../types/types";
 
 
 export const STEPS = [
-  { number: 1, title: "professionalInfoStep", icon: User },
-  { number: 2, title: "appointmentsStep", icon: Calendar },
+  { number: 1, title: "personalInfoStep", icon: User },
+  { number: 2, title: "professionalInfoStep", icon: Calendar },
+  { number: 3, title: "appointmentsStep", icon: Clock },
 ];
 
 export const APPOINTMENT_TYPES = [
@@ -135,4 +136,4 @@ export const DAYS = [
   { value: "friday", label: "الجمعة" },
   { value: "saturday", label: "السبت" },
   { value: "sunday", label: "الأحد" },
-];
+]as const;;

@@ -14,7 +14,8 @@ import type { DoctorOnboardingData } from "../../types/types";
 import { useUpdateDoctorProfile } from "../../hooks/doctor/useUpdateDoctorProfile";
 
 export const DoctorOnboardingForm = () => {
-  const { t } = useTranslation(['onboarding']);
+  const { t, i18n } = useTranslation(['onboarding', 'validation']);
+  const isRtl = i18n.dir() === "rtl";
   const { data: departmentsData } = useGetDepartment();
   const { mutate, isPending } = useUpdateDoctorProfile();
   const [step, setStep] = useState(1);
@@ -24,15 +25,14 @@ export const DoctorOnboardingForm = () => {
     handleSubmit,
     control,
     formState: { errors },
+    trigger,
+    watch,
   } = useForm<DoctorOnboardingData>({
     resolver: zodResolver(doctorOnboardingSchema),
     defaultValues: {
       experience: 0,
       fee: 100,
-      schedule: [{
-        day: "saturday", startTime: "09:00",
-        endTime: "17:00"
-      }],
+      schedule: [{ day: "saturday", startTime: "09:00", endTime: "17:00" }],
     },
   });
 
@@ -41,20 +41,51 @@ export const DoctorOnboardingForm = () => {
     name: "schedule",
   });
 
-  const handleNextStep = async () => {
-    setStep((prev) => Math.min(prev + 1, 2));
+  const schedule = watch("schedule");
+
+  const availableDays = DAYS.filter(day =>
+    !schedule.some(item => item.day === day.value)
+  );
+
+  const handleAppend = () => {
+    if (availableDays.length > 0) {
+      append({
+        day: availableDays[0].value,
+        startTime: "09:00",
+        endTime: "17:00"
+      });
+    }
   };
 
-  const handlePrevStep = () => {
-    setStep((prev) => (Math.max(prev - 1, 1)))
+  const getFieldsToValidate = () => {
+    if (step === 1) return ["specialization_en", "specialization_ar", "qualification_en", "qualification_ar"];
+    if (step === 2) return ["department", "experience"];
+    return ["fee", "schedule"];
+  };
+
+  const handleNext = async () => {
+    const fields = getFieldsToValidate();
+    const isValid = await trigger(fields as any);
+
+    if (isValid) {
+      if (step === STEPS.length) {
+        handleSubmit(onSubmit)();
+      } else {
+        setStep(step + 1);
+      }
+    }
+  };
+
+  const handlePrevious = () => setStep(step - 1);
+
+  const handleStepClick = (stepNumber: number) => {
+    if (stepNumber < step) {
+      setStep(stepNumber);
+    }
   };
 
   const onSubmit = (data: DoctorOnboardingData) => {
-    if (step === STEPS.length) {
-      mutate(data);
-    } else {
-      handleNextStep();
-    }
+    mutate(data);
   };
 
   const getDayLabel = (dayValue: string) => {
@@ -82,232 +113,202 @@ export const DoctorOnboardingForm = () => {
           </p>
         </div>
 
-        <div className="mb-10">
-          <div className="flex justify-between items-center relative">
-            <div className="absolute top-6 right-6 left-7 h-1 bg-gray-200 "></div>
+        <div className="mb-14 flex items-center justify-between px-10 md:px-10 relative">
+          {STEPS.map((ste, index) => (
+            <div key={ste.number} className="flex items-center flex-1 last:flex-none">
 
-            <div
-              className="absolute top-6 h-1 right-6 bg-primary"
-              style={{
-                width: `calc(${(step - 1) / (STEPS.length - 1) * 100}% - 46px)`
-              }}
-            ></div>
-
-            {STEPS.map(({ number, title, icon: Icon }) => (
-              <div key={number} className="flex flex-col items-center relative z-10">
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 border-4 transition-all duration-300 ${step >= number ? "bg-primary border-primary text-white" : "bg-white border-gray-300 text-gray-400"}`}>
-                  <Icon size={24} />
+              <div className="flex flex-col items-center relative z-10">
+                <div className={`w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${step >= ste.number ? "bg-primary border-primary text-white" : "bg-white border-gray-300 text-gray-400"
+                  }`}>
+                  <ste.icon className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
-                <span className={`text-sm font-medium ${step >= number ? "text-primary" : "text-gray-500"}`}>
-                  {t(`${title}`)}
+                <span className={`absolute -bottom-7 text-sm font-medium w-max ${step >= ste.number ? "text-primary" : "text-gray-500"
+                  }`}>
+                  {t(`onboarding:${ste.title}`)}
                 </span>
               </div>
-            ))}
-          </div>
+
+              {index < STEPS.length - 1 && (
+                <div className="flex-1 h-0.5 md:h-1 bg-gray-200 mx-1 md:mx-2 relative overflow-hidden">
+                  <div
+                    className={`absolute top-0 bottom-0 bg-primary transition-all duration-500 ${isRtl ? "right-0" : "left-0"}`}
+                    style={{ width: step > ste.number ? "100%" : "0%" }}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-8">
           {step === 1 && (
-            <div className="space-y-6 animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-900 border-b pb-3 border-primaryBorder">
-                {t('onboarding:professionalInfo')}
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Select
-                  label={t('onboarding:selectDepartment')}
-                  register={register("department")}
-                  error={errors.department}
-                  requiredSelect={true}
-                >
-                  <option value="">{t('onboarding:chooseDepartment')}</option>
-                  {departmentsData?.map((dept: any) => (
-                    <option key={dept._id} value={dept._id}>
-                      {dept.name}
-                    </option>
-                  ))}
-                </Select>
-
-                <TextInput
-                  label={t('onboarding:specialization_en')}
-                  id="specialization_en"
-                  requiredInput
-                  placeholder={t('onboarding:enterSpecialization')}
-                  register={register("specialization_en")}
-                  error={errors.specialization_en}
-                />
-
-                <TextInput
-                  label={t('onboarding:specialization_ar')}
-                  id="specialization_ar"
-                  requiredInput
-                  placeholder={t('onboarding:enterSpecializationAr')}
-                  register={register("specialization_ar")}
-                  error={errors.specialization_ar}
-                />
-
-                <TextInput
-                  label={t('onboarding:qualification_en')}
-                  id="qualification_en"
-                  requiredInput
-                  placeholder={t('onboarding:enterQualification')}
-                  register={register("qualification_en")}
-                  error={errors.qualification_en}
-                />
-
-                <TextInput
-                  label={t('onboarding:qualification_ar')}
-                  id="qualification_ar"
-                  requiredInput
-                  placeholder={t('onboarding:enterQualificationAr')}
-                  register={register("qualification_ar")}
-                  error={errors.qualification_ar}
-                />
-
-                <TextInput
-                  label={t('onboarding:experienceYears')}
-                  id="experience"
-                  type="number"
-                  placeholder={t('onboarding:enterExperience')}
-                  register={register("experience", { valueAsNumber: true })}
-                  error={errors.experience}
-                />
-
-                <Textarea
-                  label={t('onboarding:aboutYou_en')}
-                  id="description_en"
-                  placeholder={t('onboarding:enterDescription')}
-                  rows={3}
-                  register={register("description_en")}
-                  error={errors.description_en}
-                  className="min-h-[100px] col-span-2"
-                />
-
-                <Textarea
-                  label={t('onboarding:aboutYou_ar')}
-                  id="description_ar"
-                  placeholder={t('onboarding:enterDescriptionAr')}
-                  rows={3}
-                  register={register("description_ar")}
-                  error={errors.description_ar}
-                  className="min-h-[100px] col-span-2"
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <TextInput
+                id="specialization_en"
+                label={t('onboarding:specialization_en')}
+                placeholder={t('onboarding:enterSpecialization')}
+                register={register("specialization_en")}
+                error={errors.specialization_en}
+              />
+              <TextInput
+                id="specialization_ar"
+                label={t('onboarding:specialization_ar')}
+                placeholder={t('onboarding:enterSpecializationAr')}
+                register={register("specialization_ar")}
+                error={errors.specialization_ar}
+              />
+              <TextInput
+                id="qualification_en"
+                label={t('onboarding:qualification_en')}
+                placeholder={t('onboarding:enterQualification')}
+                register={register("qualification_en")}
+                error={errors.qualification_en}
+              />
+              <TextInput
+                id="qualification_ar"
+                label={t('onboarding:qualification_ar')}
+                placeholder={t('onboarding:enterQualificationAr')}
+                register={register("qualification_ar")}
+                error={errors.qualification_ar}
+              />
             </div>
           )}
 
           {step === 2 && (
-            <div className="space-y-6 animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-900 border-b pb-3">
-                {t('onboarding:appointmentsAndFees')}
-              </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Select
+                id="department"
+                label={t('onboarding:selectDepartment')}
+                placeholder={t('onboarding:chooseDepartment')}
+                register={register("department")}
+                error={errors.department}
+              >
+                <option value="">{t('onboarding:chooseDepartment')}</option>
+                {departmentsData?.map((dept: any) => (
+                  <option key={dept._id} value={dept._id}>{dept.name}</option>
+                ))}
+              </Select>
               <TextInput
-                label={t('onboarding:consultationFee')}
-                id="fee"
+                id="experience"
+                label={t('onboarding:experienceYears')}
                 type="number"
-                requiredInput
+                placeholder={t('onboarding:enterExperience')}
+                register={register("experience", { valueAsNumber: true })}
+                error={errors.experience}
+              />
+              <Textarea
+                id="description_en"
+                label={t('onboarding:aboutYou_en')}
+                placeholder={t('onboarding:enterDescription')}
+                register={register("description_en")}
+                className="col-span-2"
+                error={errors.description_en}
+              />
+              <Textarea
+                id="description_ar"
+                label={t('onboarding:aboutYou_ar')}
+                placeholder={t('onboarding:enterDescriptionAr')}
+                register={register("description_ar")}
+                className="col-span-2"
+                error={errors.description_ar}
+              />
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-6">
+              <TextInput
+                id="fee"
+                label={t('onboarding:consultationFee')}
+                type="number"
                 placeholder={t('onboarding:enterFee')}
                 register={register("fee", { valueAsNumber: true })}
                 error={errors.fee}
               />
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {t('onboarding:workHours')}
-                  </h3>
-                  <Button
-                    type="button"
-                    onClick={() => append({ day: "saturday", startTime: "", endTime: "" })}
-                    className="flex items-center gap-2"
+              {fields.map((scheduleItem, index) => (
+                <div key={scheduleItem.id} className="p-4 border border-primaryBorder rounded-lg bg-gray-50 grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+                  <Select
+                    id={`schedule-day-${index}`}
+                    label={t('onboarding:selectDay')}
+                    register={register(`schedule.${index}.day`)}
+                    error={errors.schedule?.[index]?.day}
                   >
-                    <Plus size={16} />
-                    {t('onboarding:addDay')}
-                  </Button>
-                </div>
-                {fields.map((schedule, index) => (
-                  <div
-                    key={schedule.id}
-                    className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-4"
-                  >
-                    <div className="flex items-center justify-end mb-3">
-                      {fields.length > 1 && (
-                        <Button
-                          type="button"
-                          onClick={() => remove(index)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Select
-                        label={t('onboarding:selectDay')}
-                        register={register(`schedule.${index}.day`)}
-                        error={errors.schedule?.[index]?.day}
-                        requiredSelect
+                    {DAYS.map((day) => (
+                      <option
+                        key={day.value}
+                        value={day.value}
+                        disabled={schedule.some((item, i) => i !== index && item.day === day.value)}
                       >
-                        <option value="">{t('onboarding:selectDay')}</option>
-                        {DAYS.map((day) => (
-                          <option key={day.value} value={day.value}>
-                            {getDayLabel(day.value)}
-                          </option>
-                        ))}
-                      </Select>
-
-                      <TextInput
-                        label={t('onboarding:from')}
-                        id={`schedule.${index}.startTime`}
-                        type="time"
-                        requiredInput
-                        register={register(`schedule.${index}.startTime`)}
-                        error={errors.schedule?.[index]?.startTime}
-                      />
-
-                      <TextInput
-                        label={t('onboarding:to')}
-                        id={`schedule.${index}.endTime`}
-                        type="time"
-                        requiredInput
-                        register={register(`schedule.${index}.endTime`)}
-                        error={errors.schedule?.[index]?.endTime}
-                      />
-                    </div>
-                  </div>
-                ))}
-
-              </div>
+                        {getDayLabel(day.value)}
+                      </option>
+                    ))}
+                  </Select>
+                  <TextInput
+                    id={`schedule-start-${index}`}
+                    label={t('onboarding:from')}
+                    type="time"
+                    register={register(`schedule.${index}.startTime`)}
+                    error={errors.schedule?.[index]?.startTime}
+                  />
+                  <TextInput
+                    id={`schedule-end-${index}`}
+                    label={t('onboarding:to')}
+                    type="time"
+                    register={register(`schedule.${index}.endTime`)}
+                    error={errors.schedule?.[index]?.endTime}
+                  />
+                  {fields.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="absolute -top-2 -right-2 bg-red-100 text-red-600 p-1 rounded-full hover:bg-red-200 transition-colors"
+                      aria-label={t('onboarding:removeDay')}
+                      title={t('onboarding:removeDay')}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <Button
+                type="button"
+                onClick={handleAppend}
+                className="w-full border-dashed border-2"
+                disabled={availableDays.length === 0}
+              >
+                <Plus size={16} /> {t('onboarding:addDay')}
+              </Button>
+              {availableDays.length === 0 && (
+                <p className="text-green-600 text-sm text-center">
+                  {t('onboarding:allDaysAdded')}
+                </p>
+              )}
             </div>
           )}
 
-          <div className="flex justify-between items-center pt-6 border-t border-primaryBorder">
+          <div className="flex justify-between pt-6 border-t border-primaryBorder">
             <Button
               type="button"
-              onClick={handlePrevStep}
-              disabled={step === 1}
-              className="min-w-[120px]"
+              onClick={handlePrevious}
+              disabled={step === 1 || isPending}
             >
               {t('onboarding:previous')}
             </Button>
 
             <Button
-              type="submit"
+              type="button"
+              onClick={handleNext}
               disabled={isPending}
-              className="min-w-[120px] bg-primary"
             >
-              {isPending ? (
+              {step < STEPS.length ? (
+                t('onboarding:next')
+              ) : isPending ? (
                 <>
-                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                  <Loader2 className="animate-spin mr-2" size={16} />
                   {t('onboarding:submitting')}
                 </>
-              ) : step === STEPS.length ? (
-                t('onboarding:completeRegistration')
               ) : (
-                t('onboarding:next')
+                t('onboarding:completeRegistration')
               )}
             </Button>
           </div>

@@ -1,6 +1,7 @@
 {
   "welcome": "مرحباً في إعداد ملف الطبيب",
   "subtitle": "أكمل ملفك المهني لبدء قبول المواعيد",
+  "personalInfo": "المعلومات الشخصية",
   "professionalInfo": "المعلومات المهنية",
   "selectDepartment": "اختر القسم",
   "chooseDepartment": "اختر قسم",
@@ -37,6 +38,7 @@
   "friday": "الجمعة",
   "saturday": "السبت",
   "sunday": "الأحد",
+  "personalInfoStep": "المعلومات الشخصية",
   "professionalInfoStep": "المعلومات المهنية",
   "appointmentsStep": "المواعيد والسعر"
 }
