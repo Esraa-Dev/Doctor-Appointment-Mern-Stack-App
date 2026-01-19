@@ -12,7 +12,6 @@ import { ContactInfo } from "../components/features/contact/ContactInfo";
 
 const ContactPage = () => {
   const { t } = useTranslation('contact');
-  const { t: tNav } = useTranslation('nav');
   const { mutate, isPending } = useSendMessage();
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ContactFormData>({
@@ -82,8 +81,8 @@ const ContactPage = () => {
     <div className="bg-background min-h-screen">
       <section className="py-20 bg-linear-to-r from-primary to-secondary text-white">
         <div className="container text-center">
-          <h1 className="text-5xl font-bold mb-6">{tNav('contact') || t('pageTitle')}</h1>
-          <p className="text-xl opacity-90 max-w-2xl mx-auto">{t('heroDescription')}</p>
+          <h1 className="text-5xl font-bold mb-6">{t('contact:pageTitle')}</h1>
+          <p className="text-xl opacity-90 max-w-2xl mx-auto">{t('contact:heroDescription')}</p>
         </div>
       </section>
 

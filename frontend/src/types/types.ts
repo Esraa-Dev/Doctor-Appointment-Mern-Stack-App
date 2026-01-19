@@ -488,3 +488,15 @@ export interface DoctorListResultsProps {
   totalDoctors: number;
   onClearFilters: () => void;
 }
+
+export interface DepartmentsResultsProps {
+  isLoading: boolean;
+  departments: Department[];
+}
+
+export interface DepartmentsHeaderProps {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    onSearchChange: (value: string) => void;
+}

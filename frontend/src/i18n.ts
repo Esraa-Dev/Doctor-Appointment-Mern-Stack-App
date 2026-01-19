@@ -20,8 +20,6 @@ import enValidation from "./locales/en/validation.json";
 import arValidation from "./locales/ar/validation.json";
 import enDoctorList from "./locales/en/doctorList.json";
 import arDoctorList from "./locales/ar/doctorList.json";
-import enDoctor from "./locales/en/doctor.json";
-import arDoctor from "./locales/ar/doctor.json";
 import enDepartments from "./locales/en/departments.json";
 import arDepartments from "./locales/ar/departments.json";
 
@@ -40,7 +38,6 @@ i18n
         layout: enLayout,
         validation: enValidation,
         doctorList: enDoctorList,
-        doctor: enDoctor,
         departments: enDepartments,
       },
       ar: {
@@ -53,7 +50,6 @@ i18n
         layout: arLayout,
         validation: arValidation,
         doctorList: arDoctorList,
-        doctor: arDoctor,
         departments: arDepartments,
       },
     },

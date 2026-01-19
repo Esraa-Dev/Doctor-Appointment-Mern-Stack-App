@@ -1,0 +1,13 @@
+{
+  "title": "Departments",
+  "subtitle": "Select a medical department to book an appointment",
+  "searchPlaceholder": "Search departments",
+  "doctors": "Doctors",
+  "viewDoctors": "View Doctors",
+  "noDescription": "No description available for this department yet.",
+  "failedToLoad": "Failed to load departments, please try again.",
+  "noResults": {
+    "title": "No Results Found",
+    "description": "Sorry, we couldn't find any department matching your search."
+  }
+}

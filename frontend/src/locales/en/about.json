@@ -1,0 +1,34 @@
+{
+  "heroTitle": "About Us",
+  "heroDescription": "We provide comprehensive medical care that combines medical expertise with modern technology to achieve the best health outcomes for our patients",
+  "missionTitle": "Our Mission",
+  "missionDescription": "Providing comprehensive and accessible healthcare for all through an integrated digital platform that connects patients with the best specialized doctors, focusing on an exceptional patient experience and high-quality medical care.",
+  "visionTitle": "Our Vision",
+  "visionDescription": "To be the leading digital platform in providing health services in the region, and to contribute to improving quality of life by providing innovative and accessible medical care for everyone, anytime and anywhere.",
+  "valuesTitle": "Our Values",
+  "valuesSubtitle": "The principles we believe in and work with",
+  "values": {
+    "healthFirst": {
+      "title": "Health First",
+      "description": "Comprehensive healthcare focusing on the patient and their health experiences"
+    },
+    "privacySecurity": {
+      "title": "Privacy & Security",
+      "description": "Protecting your health data with global standards"
+    },
+    "teamwork": {
+      "title": "Teamwork",
+      "description": "An integrated team of doctors and consultants"
+    },
+    "highQuality": {
+      "title": "High Quality",
+      "description": "High-quality medical standards in every service"
+    }
+  },
+  "stats": {
+    "specializedDoctors": "specialized doctors",
+    "satisfiedPatients": "satisfied patients",
+    "technicalSupport": "technical support",
+    "customerSatisfaction": "customer satisfaction"
+  }
+}
