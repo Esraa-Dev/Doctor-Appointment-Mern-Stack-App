@@ -1,21 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { useGetDepartment } from "../../hooks/department/useGetDepartment";
 import type { Department } from "../../types/types";
-import Loading from "../ui/Loading";
 import { useTranslation } from "react-i18next";
+import { SpecialityMenuSkeleton } from "./home/SpecialityMenuSkeleton";
 
 const SpecialityMenu = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("departments");
   const { data, isLoading, isError } = useGetDepartment(1, 10, "");
   const navigate = useNavigate();
   
   if (isLoading) {
-    return <Loading />;
+    return <SpecialityMenuSkeleton />;
   }
   
   if (isError) {
     return (
-      <div className="text-center py-8 text-red-500">{t('common:error')}</div>
+      <div className="text-center py-8 text-red-500">{t('departments:failedToLoad')}</div>
     );
   }
   
@@ -29,10 +29,10 @@ const SpecialityMenu = () => {
       <div className="container">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-primaryText mb-3">
-            {t('home:medicalSpecialities')}
+            {t('departments:title')}
           </h2>
           <p className="text-secondary text-lg mb-4">
-            {t('home:chooseSpeciality')}
+            {t('departments:subtitle')}
           </p>
           <div className="w-20 h-1 bg-linear-to-r from-primary to-secondary rounded-full mx-auto"></div>
         </div>
@@ -67,10 +67,12 @@ const SpecialityMenu = () => {
                     {i18n.language === 'ar' ? item.name_ar : item.name_en}
                   </h3>
                   <p className="text-secondary text-sm font-medium">
-                    {item.doctorCount || 0} {t('home:specializedDoctors')}
+                    {item.doctorCount || 0} {t('departments:doctors')}
                   </p>
                   <p className="text-primaryText/70 text-sm mt-2 leading-relaxed">
-                    {t('home:specialityDescription')} {i18n.language === 'ar' ? item.name_ar : item.name_en}
+                    {i18n.language === 'ar' 
+                      ? (item.description_ar || t('departments:noDescription'))
+                      : (item.description_en || t('departments:noDescription'))}
                   </p>
                 </div>
               </div>

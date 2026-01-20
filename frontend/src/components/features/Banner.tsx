@@ -7,7 +7,7 @@ import { StatsSkeleton } from "./home/StatsSkeleton";
 
 const Banner = () => {
     const navigate = useNavigate();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { data, isLoading } = useGetHomeStats();
 
     return (

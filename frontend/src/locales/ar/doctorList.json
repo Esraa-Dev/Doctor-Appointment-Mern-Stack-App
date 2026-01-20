@@ -5,6 +5,12 @@
   "allDepartments": "كل الأقسام",
   "advancedFilters": "فلتر متقدم",
   "toggleAdvancedFilters": "فلترة متقدمة",
+  "topDoctors": {
+    "title": "فريق الأطباء",
+    "subtitle": "أطباء متخصصون لرعايتك الصحية",
+    "viewAll": "عرض جميع الأطباء",
+    "book": "احجز"
+  },
   "filters": {
     "experience": {
       "label": "الخبرة (سنة)",
@@ -51,5 +57,12 @@
       "message": "حاول تعديل معايير البحث"
     }
   },
-  "search":"ابحث بواسطه اسم الطبيب او التخصص"
+  "search": "ابحث بواسطه اسم الطبيب او التخصص",
+  "common": {
+    "yearsExperience": "سنة خبرة",
+    "currency": "ج.م",
+    "specialtyNotSpecified": "تخصص غير محدد",
+    "locationNotSpecified": "غير محدد"
+  },
+  "failedToLoad": "فشل تحميل الأطباء"
 }

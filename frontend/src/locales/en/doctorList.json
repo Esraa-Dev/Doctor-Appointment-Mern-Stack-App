@@ -5,6 +5,12 @@
   "allDepartments": "All Departments",
   "advancedFilters": "Advanced Filter",
   "toggleAdvancedFilters": "Advanced Filtering",
+  "topDoctors": {
+    "title": "Our Medical Team",
+    "subtitle": "Specialized doctors for your healthcare",
+    "viewAll": "View All Doctors",
+    "book": "Book"
+  },
   "filters": {
     "experience": {
       "label": "Experience (years)",
@@ -51,5 +57,12 @@
       "message": "Try adjusting your search criteria"
     }
   },
-  "search": "Search by doctor name or specialty"
+  "search": "Search by doctor name or specialty",
+  "common": {
+    "yearsExperience": "years experience",
+    "currency": "EGP",
+    "specialtyNotSpecified": "Specialty not specified",
+    "locationNotSpecified": "Not specified"
+  },
+  "failedToLoad": "Failed to load doctors"
 }
