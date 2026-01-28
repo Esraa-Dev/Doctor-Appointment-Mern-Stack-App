@@ -555,3 +555,46 @@ export interface RecentAppointment {
 export interface RecentAppointmentsProps {
   appointments: RecentAppointment[];
 }
+
+export interface DeptStat {
+  name: string;
+  count: number;
+}
+
+interface DoctorSceduleData {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  specialization_en: string;
+  isAvailableToday: boolean;
+}
+
+interface DoctorsStatusData {
+  available: number;
+  unavailable: number;
+  list: DoctorSceduleData[];
+}
+
+export interface DoctorsStatusCardProps {
+  doctorsData: DoctorsStatusData;
+}
+
+export interface TopPatientsCardProps {
+  id: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  count: number;
+}
+
+export interface StatusStat {
+  _id: string;
+  count: number;
+}
+
+export interface ScheduleDay {
+  day: string;
+  startTime: string;
+  endTime: string;
+}

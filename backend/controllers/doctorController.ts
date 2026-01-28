@@ -312,9 +312,72 @@ export const getDoctorStats = AsyncHandler(
               },
             },
           ],
+          topPatients: [
+            {
+              $group: {
+                _id: "$patientId",
+                count: { $sum: 1 },
+              },
+            },
+            { $sort: { count: -1 } },
+            { $limit: 5 },
+            {
+              $lookup: {
+                from: "users",
+                localField: "_id",
+                foreignField: "_id",
+                as: "patient",
+              },
+            },
+            { $unwind: "$patient" },
+            {
+              $project: {
+                id: "$_id",
+                firstName: "$patient.firstName",
+                lastName: "$patient.lastName",
+                image: "$patient.image",
+                count: 1,
+                _id: 0,
+              },
+            },
+          ],
+          upcomingAppointments: [
+            {
+              $match: {
+                appointmentDate: { $gte: today },
+                status: { $in: ["Scheduled", "Pending"] },
+              },
+            },
+            { $sort: { appointmentDate: 1, startTime: 1 } },
+            { $limit: 4 },
+            {
+              $lookup: {
+                from: "users",
+                localField: "patientId",
+                foreignField: "_id",
+                as: "patient",
+              },
+            },
+            { $unwind: "$patient" },
+            {
+              $project: {
+                patientName: {
+                  $concat: ["$patient.firstName", " ", "$patient.lastName"],
+                },
+                date: "$appointmentDate",
+                time: "$startTime",
+                type: "$type",
+                image: "$patient.image",
+                _id: 0,
+              },
+            },
+          ],
         },
       },
     ]);
+
+    const doctor = await Doctor.findById(doctorId).select("schedule");
+    const schedule = doctor?.schedule || [];
 
     const totals = statsSummary[0]?.totals[0] || {
       totalAppointments: 0,
@@ -325,10 +388,26 @@ export const getDoctorStats = AsyncHandler(
     };
 
     const recentAppointments = statsSummary[0]?.recentAppointments || [];
+    const topPatients = statsSummary[0]?.topPatients || [];
+    const upcomingAppointments = statsSummary[0]?.upcomingAppointments || [];
+
+    const appointmentStatusStats = await Appointment.aggregate([
+      { $match: { doctorId: new mongoose.Types.ObjectId(doctorId) } },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
     const stats = {
       ...totals,
       recentAppointments,
+      topPatients,
+      upcomingAppointments,
+      schedule,
+      appointmentStatusStats,
     };
 
     res
